@@ -46,10 +46,7 @@ function SigninForm() {
             <small className="d-block text-end mt-1 text-muted position-absolute" style={{marginLeft:'420px', cursor: "pointer" }}>
                   Forgot Password?
             </small>
-            
-
-            
-              
+      
             {/* Sign in button  */}
             <button type="submit" class="btn btn-primary rounded-pill position-absolute " style={{ marginLeft:'180px', marginTop: '50px', marginBottom: '50px', width: '300px', backgroundColor: '#0FC5BB', borderColor: '#0FC5BB' }}>Sign In</button>
 
@@ -61,11 +58,11 @@ function SigninForm() {
             </div>
 
             {/* Google Sign in button  */}
-            <button type="submit" class="btn btn-primary rounded-pill position-absolute " style={{ marginLeft:'180px', marginTop: '5px', marginBottom: '50px', width: '300px', backgroundColor: '#FFFFFF', color: '#0FC5BB', borderColor: '#0FC5BB'}}>
+            <button type="submit" class="btn btn-primary rounded-pill position-absolute" style={{ marginLeft:'180px', marginTop: '5px', marginBottom: '50px', width: '300px', backgroundColor: '#FFFFFF', color: '#0FC5BB', borderColor: '#0FC5BB'}}>
               <img
                 src="https://img.icons8.com/color/16/000000/google-logo.png"
                 alt="Google"
-                className="me-2"
+                className="me-2 position-absolute" style={{left:'40px'}}
             />Sign In with Google</button>
             
           </form>
@@ -75,8 +72,16 @@ function SigninForm() {
 
           <div className='mt-5 position-absolute '  style={{ marginTop: '100px',top: '250px',left: '1200px',height: '600px',width:'357px'}}>
               <div className="h4 m-3 align-super text-light justify-content-center">Welcome folks</div>
-              <div className="fs-6 text-light mt-5 position-absolute">To keep connected with us please login your personal info</div>
+              <div className=" text-light mt-5 position-absolute text-wrap">To keep connected with us </div>  
+
           </div> 
+
+          <div className='fs-10 p-20 position-absolute  translate-middle'  style={{ left: '750px'}}>
+            Don't have an account? 
+            <button type="button" class="btn" style={{color:'#0FC5BB'}}>Sign Up</button>
+          </div>
+
+          {/* please login your personal info */}
 
           
         {/* <div className="border rounded position-absolute"
