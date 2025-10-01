@@ -4,9 +4,10 @@ import Footer from "../Components/Footer"
 //const [showPassword, setShowPassword] = useState(false);
 
 function SigninForm() {
+  
   return (
     <>
-      <div className="d-flex justify-content-center" style={{ marginTop: '120px', marginBottom: '145px' }}>
+      <div className="cvh-100 d-flex justify-content-center align-items-center" style={{ marginTop: '50px', marginBottom: '100px' }}>
         <div className="border rounded shadow p-20" style={{
           width: '1030px',
           height: '600px',
