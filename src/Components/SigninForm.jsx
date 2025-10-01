@@ -78,7 +78,7 @@ function SigninForm() {
           </div> 
 
           <div className='fs-10 p-20 position-absolute  translate-middle'  style={{ left: '750px'}}>
-            Don't have an account? 
+            Don't have an account.........? 
             <button type="button" class="btn" style={{color:'#0FC5BB'}}>Sign Up</button>
           </div>
 
