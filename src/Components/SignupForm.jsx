@@ -1,8 +1,17 @@
 import React from 'react'
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
 import Footer from "../Components/Footer"
+import { useNavigate } from "react-router-dom";
 
 function SignupForm() {
+
+   const navigate = useNavigate();
+  
+    const handleSignInClick = () => {
+      navigate("/");
+    };
+
+
   return (
     <div>
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '88vh' }}>
@@ -119,7 +128,7 @@ function SignupForm() {
                   {/* Sign in link */}
                   <div className="text-center mt-1" style={{ fontSize: '14px' }}>
                     Already have an account?{' '}
-                    <button type="button" className="btn p-0" style={{ color: '#0FC5BB', fontWeight: 500, fontSize: '14px' }}>
+                    <button onClick={handleSignInClick} type="button" className="btn p-0" style={{ color: '#0FC5BB', fontWeight: 500, fontSize: '12px' }}>
                       Sign In
                     </button>
                   </div>
