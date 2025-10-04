@@ -5,8 +5,8 @@ import Footer from "../Components/Footer"
 
 function SigninForm() {
   return (
-    <>
-      <div className="d-flex justify-content-center" style={{ marginTop: '120px', marginBottom: '145px' }}>
+    < >
+      <div  className="d-flex justify-content-center" style={{ marginTop: '120px', marginBottom: '145px' }}>
         <div className="border rounded shadow p-20" style={{
           width: '1030px',
           height: '600px',
