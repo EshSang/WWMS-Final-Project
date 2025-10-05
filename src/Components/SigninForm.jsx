@@ -1,11 +1,12 @@
 import React from 'react'
-import Footer from "../Components/Footer"
+import Footer from "./Footer"
 import { useNavigate } from "react-router-dom";
 
 //const [showPassword, setShowPassword] = useState(false);
 
 function SigninForm() {
 
+  //navigate to sign up page
   const navigate = useNavigate();
 
   const handleSignUpClick = () => {
@@ -14,7 +15,7 @@ function SigninForm() {
   
   return (
     <>
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '90vh' }}>
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '88vh' }}>
         <div className="shadow rounded" style={{ width: '1050px', background: '#fff' }}>
           <div className="row g-0" style={{ height: '600px', display: 'flex', flexWrap: 'nowrap' }}>
             {/* Left: Form */}
@@ -81,7 +82,7 @@ function SigninForm() {
                         backgroundColor: '#fff',
                         color: '#0FC5BB',
                         borderColor: '#0FC5BB',
-                        borderWidth: '2px',
+                        borderWidth: '1px',
                         fontWeight: 500
                       }}
                     >
@@ -97,7 +98,7 @@ function SigninForm() {
                   {/* Sign up link */}
                   <div className="text-center mt-2" style={{ fontSize: '14px' }}>
                     Don't have an account?{' '}
-                    <button onClick={handleSignUpClick} type="button" className="btn p-0" style={{ color: '#0FC5BB', fontWeight: 500,  fontSize: '12px'}}>
+                    <button onClick={handleSignUpClick} type="button" className="btn p-0 " style={{ color: '#0FC5BB', fontWeight: 500,  fontSize: '12px'}}>
                       Sign Up
                     </button>
                   </div>
