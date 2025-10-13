@@ -23,17 +23,28 @@ function SignupForm() {
     password: ''
   });
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  // function handleSubmit(e) {
+  //   e.preventDefault();
     
-    axios.post('/signup', values)
-      .then((res) => {
-        const navigate = useNavigate(); //navigate to sign in page after successful sign up
-        navigate("/");
-        console.log(res);
-      })
-      .catch((err) => console.log(err));
-  }
+  //   axios.post('http://localhost:5000/signup', values)
+  //     .then((res) => {
+  //       const navigate = useNavigate(); //navigate to sign in page after successful sign up
+  //       navigate("/");
+  //       console.log(res);
+  //     })
+  //     .catch((err) => console.log(err));
+  // }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post('http://localhost:5000/signup', values);
+      console.log(res.data);
+      alert('Signup successful!');
+    } catch (err) {
+      console.error(err);
+      alert('Signup failed');
+    }}
   
 
 
@@ -126,7 +137,7 @@ function SignupForm() {
                         color: '#fff',
                         fontWeight: 500
                       }}
-                      onclick={handleSubmit}
+                      
                     >
                       Sign Up
                     </button>

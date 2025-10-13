@@ -15,7 +15,7 @@ const port =  5000;
 const db = mysql.createConnection({
   host: 'localhost',
   user:' root',
-  password: 'password',
+  password: '',
   database: 'wwms'
 });
 
@@ -29,13 +29,10 @@ app.post('/signup', (req, res) => {
     req.body.email,
     req.body.password
   ]
-  db.query(sql, values, (err, data) => {
-    if(err) {
+  db.query(sql, values, (err, result) => {
+    if(err) 
       return res.json({message:'Something unexpected has occurred' + err})
       return res.json({message:'User registered successfully'});
-    }
-
-
 })
 
 })

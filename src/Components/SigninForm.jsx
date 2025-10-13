@@ -12,6 +12,10 @@ function SigninForm() {
   const handleSignUpClick = () => {
     navigate("/signup");
   };
+    
+      const handleHomeClick = () => {
+        navigate("home");
+      };
   
   return (
     <>
@@ -54,6 +58,7 @@ function SigninForm() {
                   <div className="d-flex justify-content-center mt-4">
                     <button
                       type="submit"
+                      onClick={handleHomeClick}
                       className="btn rounded-pill"
                       style={{
                         width: '300px',
