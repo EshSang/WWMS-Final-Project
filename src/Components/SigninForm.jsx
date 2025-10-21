@@ -1,10 +1,24 @@
-import React from 'react'
+
+import React, { useState } from 'react'
 import Footer from "./Footer"
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
-//const [showPassword, setShowPassword] = useState(false);
 
 function SigninForm() {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  function handleLogin(event) {
+    event.preventDefault();
+    axios.post('http://localhost:8081/',{email,password})
+    //.then(res => console.log(res))
+    .then(res => {
+      navigate("/home")
+    })
+    .then(err => console.log(err));
+  }
 
   //navigate to sign up page
   const navigate = useNavigate();
@@ -12,11 +26,11 @@ function SigninForm() {
   const handleSignUpClick = () => {
     navigate("/signup");
   };
-    
-      const handleHomeClick = () => {
-        navigate("home");
-      };
-  
+
+  const handleHomeClick = () => {
+    navigate("home");
+  };
+
   return (
     <>
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '88vh' }}>
@@ -25,10 +39,10 @@ function SigninForm() {
             {/* Left: Form */}
             <div className="col-7 d-flex flex-column justify-content-center align-items-center" style={{ background: '#fff', borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px', height: '600px' }}>
               <div className="w-100 px-5">
-                <div className="text-center fs-3 mb-4" style={{ marginTop: '20px' }}>
+                <div className="text-center fs-3 mb-2" style={{ marginTop: '20px' }}>
                   Sign in to your Account
                 </div>
-                <form>
+                <form onSubmit={handleLogin}>
                   {/* Email Input */}
                   <div className="mb-3">
                     <input
@@ -36,6 +50,7 @@ function SigninForm() {
                       className="form-control"
                       placeholder="Email address"
                       style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}
+                      onChange={e => setEmail(e.target.value)}
                     />
                   </div>
                   {/* Password Input */}
@@ -45,6 +60,7 @@ function SigninForm() {
                         type="password"
                         className="form-control"
                         placeholder="Password"
+                        onChange={e => setPassword(e.target.value)}
                       />
                     </div>
                   </div>
@@ -58,7 +74,7 @@ function SigninForm() {
                   <div className="d-flex justify-content-center mt-4">
                     <button
                       type="submit"
-                      onClick={handleHomeClick}
+                      // onClick={handleHomeClick}
                       className="btn rounded-pill"
                       style={{
                         width: '300px',
@@ -92,7 +108,7 @@ function SigninForm() {
                       }}
                     >
                       <img
-                        src="https://img.icons8.com/color/24/000000/google-logo.png"
+                        src="/public/Google Icon.png"
                         alt="Google"
                         className="me-2"
                         style={{ width: '24px', height: '24px' }}
@@ -101,9 +117,9 @@ function SigninForm() {
                     </button>
                   </div>
                   {/* Sign up link */}
-                  <div className="text-center mt-2" style={{ fontSize: '14px' }}>
+                  <div className="text-center mt-3" style={{ fontSize: '14px' }}>
                     Don't have an account?{' '}
-                    <button onClick={handleSignUpClick} type="button" className="btn p-0 " style={{ color: '#0FC5BB', fontWeight: 500,  fontSize: '12px'}}>
+                    <button onClick={handleSignUpClick} type="button" className="btn p-0 " style={{ color: '#0FC5BB', fontWeight: 500, fontSize: '12px' }}>
                       Sign Up
                     </button>
                   </div>
@@ -135,8 +151,8 @@ function SigninForm() {
       <Footer />
     </>
 
-        
-  
+
+
   )
 }
 

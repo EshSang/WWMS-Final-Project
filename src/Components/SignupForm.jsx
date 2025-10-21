@@ -162,6 +162,36 @@ function SignupForm() {
                     </button>
                   </div>
 
+                   {/* Divider */}
+                  <div className="d-flex align-items-center my-4" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
+                    <hr className="flex-grow-1" />
+                    <span className="px-2 text-muted" style={{ fontSize: "12px" }}>Or</span>
+                    <hr className="flex-grow-1" />
+                  </div>
+                  {/* Google Sign in button */}
+                  <div className="d-flex justify-content-center mb-2">
+                    <button
+                      type="button"
+                      className="btn rounded-pill d-flex align-items-center justify-content-center"
+                      style={{
+                        width: '300px',
+                        backgroundColor: '#fff',
+                        color: '#0FC5BB',
+                        borderColor: '#0FC5BB',
+                        borderWidth: '1px',
+                        fontWeight: 500
+                      }}
+                    >
+                      <img
+                        src="/public/Google Icon.png"
+                        alt="Google"
+                        className="me-2"
+                        style={{ width: '24px', height: '24px' }}
+                      />
+                      Sign In with Google
+                    </button>
+                  </div>
+
                   <div className="text-center mt-3" style={{ fontSize: '14px' }}>
                     Already have an account?{' '}
                     <button onClick={() => navigate("/")} type="button" className="btn p-0" style={{ color: '#0FC5BB', fontWeight: 500, fontSize: '12px' }}>

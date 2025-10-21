@@ -1,8 +1,15 @@
 import React from 'react';
-import { Container, Row, Col, Card, Button, Form, InputGroup, Navbar, Nav } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Form, InputGroup, Navbar} from 'react-bootstrap';
 import { GeoAlt, CalendarDate, PersonCircle, FileEarmarkPlus } from 'react-bootstrap-icons';
+import { Nav } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 export default function WorkerJobs() {
+
+    
+    const handleMyServiceClick = () => {
+    navigate("/workermyservice");
+  };
 
     const jobs = [
         {
@@ -37,12 +44,12 @@ export default function WorkerJobs() {
                         Jobs
                     </Navbar.Brand> */}
                     <Nav className="ms-4">
-                        <Nav.Link className="fw-semibold">Jobs</Nav.Link>
-                        <Nav.Link>My Services</Nav.Link>
-                        <Nav.Link>Orders</Nav.Link>
-                        <Nav.Link>Earning</Nav.Link>
-                        <Nav.Link>Reviews</Nav.Link>
-                        <Nav.Link>Analytics</Nav.Link>
+                        <Nav.Link as={Link} to="/workerjob" className="fw-semibold ">Jobs</Nav.Link>
+                        <Nav.Link as={Link} to="/workermyservice">My Services</Nav.Link>
+                        <Nav.Link as={Link} to="/workerorders">Orders</Nav.Link>
+                        <Nav.Link as={Link} to="/workerearning">Earning</Nav.Link>
+                        <Nav.Link as={Link} to="/workerreviews">Reviews</Nav.Link>
+                        <Nav.Link as={Link} to="/workeranalytics">Analytics</Nav.Link>
                     </Nav>
                     {/* <div className="ms-auto d-flex align-items-center">
                         <PersonCircle size={24} className="me-2 text-secondary" />
