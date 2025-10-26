@@ -6,7 +6,6 @@ function SignIn() {
   return (
     <>
         <SigninForm/>
-        {/* <SignInNew/> */}
     </>
     
   )

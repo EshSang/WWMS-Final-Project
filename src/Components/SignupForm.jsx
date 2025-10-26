@@ -61,6 +61,13 @@ function SignupForm() {
         setTimeout(() => {
           navigate("/");
         }, 2000);
+
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+          setSuccessMessage('');
+          setErrorMessage('');
+        }, 2000);
+
       })
       .catch(err => {
         console.error("Signup Error:", err);
@@ -71,15 +78,20 @@ function SignupForm() {
 
   return (
     <>
-      {/* Success & Error Messages */}
-      <div className="mt-3 text-center" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
-        {successMessage && <Alert variant="success" className="py-2">{successMessage}</Alert>}
-        {errorMessage && <Alert variant="danger" className="py-2">{errorMessage}</Alert>}
-      </div>
+    {/* Success & Error Messages */}
+      <div className=" mt-3 text-center" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
+        {successMessage && <Alert dismissible onClose={() => setSuccessMessage("")} variant="success" 
+        className="centered-alert">{successMessage}</Alert>}
 
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '88vh' }}>
+        {errorMessage && <Alert dismissible onClose={() => setErrorMessage("")} variant="danger" 
+        className="centered-alert">{errorMessage}</Alert>}
+      </div>
+      
+
+      <div className="d-flex justify-content-center align-items-center bg-light" style={{ minHeight: '88vh' }}>
         <div className="shadow rounded" style={{ width: '1050px', background: '#fff' }}>
           <div className="row g-0" style={{ height: '600px', display: 'flex', flexWrap: 'nowrap' }}>
+            
             
             {/* Left: Form */}
             <div className="col-7 d-flex flex-column justify-content-center align-items-center" style={{ background: '#fff', borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px', height: '600px' }}>
@@ -113,7 +125,7 @@ function SignupForm() {
                   </div>
                   <div className="mb-2">
                     <input
-                      type="text"
+                      type="number"
                       name="phonenumber"
                       className="form-control"
                       placeholder="Phone Number"
@@ -160,6 +172,8 @@ function SignupForm() {
                     >
                       Sign Up
                     </button>
+                    
+
                   </div>
 
                    {/* Divider */}

@@ -3,21 +3,37 @@ import React, { useState } from 'react'
 import Footer from "./Footer"
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import Validation from '../LoginValidation';
 
 
 function SigninForm() {
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
 
-  function handleLogin(event) {
+  const [values, setValues] = useState({
+    email: '',
+    password: ''
+  });
+
+  const [errors, setErrors] = useState({})
+  const handleInput = (event) =>{
+    setValues(prev => ({...prev, [event.target.name]: event.target.value}))
+  }
+
+  // const handleLogin = (event) => {
+  //   event.preventDefault();
+  //   axios.post('http://localhost:8081/',{email,password})
+  //   //.then(res => console.log(res))
+  //   .then(res => {
+  //     navigate("/home")
+  //   })
+  //   .then(err => console.log(err));
+  // }
+
+  const handleLogin = (event) => {
     event.preventDefault();
-    axios.post('http://localhost:8081/',{email,password})
-    //.then(res => console.log(res))
-    .then(res => {
-      navigate("/home")
-    })
-    .then(err => console.log(err));
+    setErrors(Validation(values))
   }
 
   //navigate to sign up page
@@ -42,27 +58,35 @@ function SigninForm() {
                 <div className="text-center fs-3 mb-2" style={{ marginTop: '20px' }}>
                   Sign in to your Account
                 </div>
-                <form onSubmit={handleLogin}>
+                <form onSubmit={handleHomeClick}>
                   {/* Email Input */}
-                  <div className="mb-3">
+                  <div className="mb-2">
                     <input
+                      name="email"
                       type="email"
                       className="form-control"
                       placeholder="Email address"
                       style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}
-                      onChange={e => setEmail(e.target.value)}
+                      // onChange={e => setEmail(e.target.value)}
+                      onChange={handleInput}
                     />
+                    
                   </div>
+                  {errors.email && <span className='text-danger ms-4'>{errors.email}</span>}
                   {/* Password Input */}
                   <div className="mb-2">
                     <div className="input-group" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
                       <input
+                        name="password"
                         type="password"
                         className="form-control"
                         placeholder="Password"
-                        onChange={e => setPassword(e.target.value)}
+                        // onChange={e => setPassword(e.target.value)}
+                        onChange={handleInput}
                       />
+                      
                     </div>
+                    {errors.password && <span className='text-danger ms-4'>{errors.password}</span>}
                   </div>
                   {/* Forgot password */}
                   <div className="d-flex justify-content-end" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
