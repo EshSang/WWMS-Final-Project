@@ -7,8 +7,16 @@ export default function Home() {
   //navigate to sign up page
   const navigate = useNavigate();
 
-  const handleWorkerJobClick = () => {
-    navigate("/workerjob");
+  const handleWorkerJobClick = (type) => {
+    //navigate("/workerjob");
+    // Navigate to next page and pass selected type
+    navigate("/workerjob", { state: { selectedType: type }});
+  };
+
+  const handleCustomerJobClick = (type) => {
+    //navigate("/customerjobs");
+    // Navigate to next page and pass selected type
+    navigate("/customerjobs", { state: { selectedType: type }});
   };
    
   return (
@@ -59,7 +67,7 @@ export default function Home() {
                   width="60"
                   height="60"
                   className="mx-auto mb-3"
-                  onClick={handleWorkerJobClick}
+                  onClick={() => handleWorkerJobClick("Worker")}
                 
                 />
                 <h6>Worker</h6>
@@ -73,6 +81,7 @@ export default function Home() {
                   width="60"
                   height="60"
                   className="mx-auto mb-3"
+                  onClick={() => handleCustomerJobClick("Customer")}
                 />
                 <h6>Customer</h6>
               </div>

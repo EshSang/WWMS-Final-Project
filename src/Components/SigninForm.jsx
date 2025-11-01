@@ -49,7 +49,7 @@ function SigninForm() {
 
   return (
     <>
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '88vh' }}>
+      <div className="d-flex justify-content-center align-items-center bg-light" style={{ minHeight: '88vh'}}>
         <div className="shadow rounded" style={{ width: '1050px', background: '#fff' }}>
           <div className="row g-0" style={{ height: '600px', display: 'flex', flexWrap: 'nowrap' }}>
             {/* Left: Form */}
@@ -72,7 +72,7 @@ function SigninForm() {
                     />
                     
                   </div>
-                  {errors.email && <span className='text-danger ms-4'>{errors.email}</span>}
+                  {/* {errors.email && <span className='text-danger ms-4'>{errors.email}</span>} */}
                   {/* Password Input */}
                   <div className="mb-2">
                     <div className="input-group" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
@@ -86,7 +86,7 @@ function SigninForm() {
                       />
                       
                     </div>
-                    {errors.password && <span className='text-danger ms-4'>{errors.password}</span>}
+                    {/* {errors.password && <span className='text-danger ms-4'>{errors.password}</span>} */}
                   </div>
                   {/* Forgot password */}
                   <div className="d-flex justify-content-end" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
