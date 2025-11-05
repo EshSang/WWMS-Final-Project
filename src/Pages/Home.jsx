@@ -8,16 +8,27 @@ export default function Home() {
   const navigate = useNavigate();
 
   const handleWorkerJobClick = (type) => {
-    //navigate("/workerjob");
+    // Store selected type in sessionStorage for persistence
+    sessionStorage.setItem("selectedType", type);
     // Navigate to next page and pass selected type
     navigate("/workerjob", { state: { selectedType: type }});
   };
 
   const handleCustomerJobClick = (type) => {
-    //navigate("/customerjobs");
+    // Store selected type in sessionStorage for persistence
+    sessionStorage.setItem("selectedType", type);
     // Navigate to next page and pass selected type
     navigate("/customerjobs", { state: { selectedType: type }});
   };
+
+  // const handleSelect = (type) => {
+  //   sessionStorage.setItem("userType", type); // Store value
+
+  //   if (type === "Worker") {
+  //     navigate("/workerjob"); // Redirect to next page
+  //   } else
+  //   navigate("/customerjobs"); // Redirect to next page
+  // };
    
   return (
   
@@ -39,16 +50,6 @@ export default function Home() {
           </div>
         </nav>
 
-        {/* <button
-          className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 px-10 py-10 m-10"
-          onClick={() => navigate(-1)}
-          style={{ fontSize: "0.85rem", width: "80px", minWidth: "unset" }}
-        >
-          <ArrowLeft size={14} />
-          Back
-        </button> */}
-
-
         {/* Main Content */}
         <div className="container flex-grow-1 d-flex justify-content-center align-items-center">
 
@@ -67,7 +68,8 @@ export default function Home() {
                   width="60"
                   height="60"
                   className="mx-auto mb-3"
-                  onClick={() => handleWorkerJobClick("Worker")}
+                  onClick={() => handleWorkerJobClick("Worker")} 
+                  //onClick={() => handleSelect("Worker")}
                 
                 />
                 <h6>Worker</h6>
@@ -82,6 +84,7 @@ export default function Home() {
                   height="60"
                   className="mx-auto mb-3"
                   onClick={() => handleCustomerJobClick("Customer")}
+                  //onClick={() => handleSelect("Customer")}
                 />
                 <h6>Customer</h6>
               </div>

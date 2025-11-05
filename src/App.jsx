@@ -17,6 +17,10 @@ import CustomerPostedJobs from './Pages/CustomerPostedJobs';
 import CustomerReviews from './Pages/CustomerReviews';
 import CustomerAnalytics from './Pages/CustomerAnalytics';
 
+import UserProfile from './Pages/UserProfile';
+
+
+
 function App() {
   
 
@@ -24,16 +28,18 @@ function App() {
     <>
       <Router>
         <Routes>
-          {/* Worker Pages */}
+          
           <Route path="/" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/workerjob" element={<WorkerJobs />} />
-          <Route path="/workermyservice" element={<WorkerMyService />} />
-          <Route path="/workerorders" element={<WorkerOrders />} />
-          <Route path="/workerearning" element={<WorkerEarning />} />
-          <Route path="/workerreviews" element={<WorkerReviews />} />
-          <Route path="/workeranalytics" element={<WorkerAnalytics />} />
+
+          {/* Worker Pages */}
+          <Route path="/workerjob" element={<WorkerJobs/>} />
+          <Route path="/workermyservice" element={<WorkerMyService/>} />
+          <Route path="/workerorders" element={<WorkerOrders/>} />
+          <Route path="/workerearning" element={<WorkerEarning/>} />
+          <Route path="/workerreviews" element={<WorkerReviews/>} />
+          <Route path="/workeranalytics" element={<WorkerAnalytics/>} />
 
           {/* Customer Pages */}
           <Route path="/customerjobs" element={<CustomerJobs/>} />
@@ -42,6 +48,10 @@ function App() {
           <Route path="/customerpostedjobs" element={<CustomerPostedJobs/>} />
           <Route path="/customerreviews" element={<CustomerReviews/>} /> 
           <Route path="/customeranalytics" element={<CustomerAnalytics/>} />
+
+          <Route path="/profile" element={<UserProfile/>} />
+
+          
 
         </Routes>
       </Router>

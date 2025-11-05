@@ -11,7 +11,10 @@ export default function WorkerAnalytics() {
     <div>
       {/* Navbar */}
             <TopNavbar/>
-            <Footer/>
+            <h1>WorkerAnalytics</h1>
+            <h1>WorkerAnalytics</h1>
+            <h1>WorkerAnalytics</h1>
+            <h1>WorkerAnalytics</h1>
     </div>
   )
 }

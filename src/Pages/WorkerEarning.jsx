@@ -10,8 +10,12 @@ export default function WorkerEarning() {
   return (
     <div>
       {/* Navbar */}
-            <TopNavbar/>
-            <Footer/>
+      <TopNavbar />
+      <h1>WorkerEarning</h1>
+      <h1>WorkerEarning</h1>
+      <h1>WorkerEarning</h1>
+      <h1>WorkerEarning</h1>
+      <h1>WorkerEarning</h1>
     </div>
   )
 }

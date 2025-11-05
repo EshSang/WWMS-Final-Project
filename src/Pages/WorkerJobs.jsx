@@ -82,7 +82,7 @@ export default function WorkerJobs() {
                 <Container className="my-4">
                     <InputGroup className="mb-3 mt-5" style={{ width: "350px" }}>
                         <InputGroup.Text>
-                            <i class="bi bi-search"></i>
+                            <i className="bi bi-search"></i>
                         </InputGroup.Text>
                         <Form.Control type="text" placeholder="Search Jobs" />
                     </InputGroup>

@@ -1,13 +1,12 @@
-import React, { useState } from 'react'
-import { Alert } from 'react-bootstrap'
-import Footer from "./Footer"
+import React, { useState } from 'react';
+import { Form, Button, Alert } from 'react-bootstrap';
+import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 function SignupForm() {
-
   const navigate = useNavigate();
-
+  
   const [values, setValues] = useState({
     fname: '',
     lname: '',
@@ -16,6 +15,7 @@ function SignupForm() {
     password: ''
   });
 
+  const [validated, setValidated] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -25,30 +25,21 @@ function SignupForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const form = event.currentTarget;
 
-    // ✅ Frontend validation (empty field check)
-    if (!values.fname || !values.lname || !values.phonenumber || !values.email || !values.password) {
-      setErrorMessage("⚠️ Please fill in all the required fields.");
-      setSuccessMessage('');
+    if (!form.checkValidity()) {
+      setValidated(true);
       return;
     }
 
-    axios.post('http://localhost:8081/signup', values)
+    axios.post("http://localhost:8081/signup", values)
       .then(res => {
-        console.log("Signup Response:", res.data);
-
-        // Check backend duplicate response
         if (res.data === "User already exists" || res.data?.message === "User already exists") {
           setErrorMessage("⚠️ This email is already registered. Please use a different one.");
-          setSuccessMessage('');
           return;
         }
 
-        // Success
-        setSuccessMessage(" ✅ User registered successfully!");
-        setErrorMessage('');
-
-        // Clear form
+        setSuccessMessage("✅ User registered successfully!");
         setValues({
           fname: '',
           lname: '',
@@ -57,123 +48,96 @@ function SignupForm() {
           password: ''
         });
 
-        // Redirect after 2 seconds
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
-
-        // Auto-hide after 3 seconds
-        setTimeout(() => {
-          setSuccessMessage('');
-          setErrorMessage('');
-        }, 2000);
-
+        setTimeout(() => navigate("/"), 2000);
       })
-      .catch(err => {
-        console.error("Signup Error:", err);
-        setErrorMessage("❌ Something went wrong. Please try again later.");
-        setSuccessMessage('');
-      });
+      .catch(() => setErrorMessage("❌ Something went wrong. Please try again later."));
   };
 
   return (
     <>
-    {/* Success & Error Messages */}
-      <div className=" mt-3 text-center" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
-        {successMessage && <Alert dismissible onClose={() => setSuccessMessage("")} variant="success" 
-        className="centered-alert">{successMessage}</Alert>}
-
-        {errorMessage && <Alert dismissible onClose={() => setErrorMessage("")} variant="danger" 
-        className="centered-alert">{errorMessage}</Alert>}
+      <div className="mt-3 text-center" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
+        {successMessage && <Alert variant="success">{successMessage}</Alert>}
+        {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
       </div>
-      
 
       <div className="d-flex justify-content-center align-items-center bg-light" style={{ minHeight: '88vh' }}>
         <div className="shadow rounded" style={{ width: '1050px', background: '#fff' }}>
-          <div className="row g-0" style={{ height: '600px', display: 'flex', flexWrap: 'nowrap' }}>
-            
-            
-            {/* Left: Form */}
-            <div className="col-7 d-flex flex-column justify-content-center align-items-center" style={{ background: '#fff', borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px', height: '600px' }}>
-              <div className="w-100 px-5">
-                <div className="text-center fs-3 mb-2" style={{ marginTop: '20px' }}>
-                  Create Account
-                </div>
+          <div className="row g-0" style={{ height: '620px' }}>
 
-                <form onSubmit={handleSubmit}>
-                  <div className="mb-2">
-                    <input
+            {/* Left Form Section */}
+            <div className="col-7 d-flex flex-column justify-content-center align-items-center bg-white">
+              <div className="w-100 px-5">
+
+                <h3 className="text-center mb-3">Create Account</h3>
+
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+
+                  <Form.Group className="mb-2" style={{ maxWidth: '400px', margin: '0 auto' }}>
+                    <Form.Control
+                      required
                       type="text"
                       name="fname"
-                      className="form-control"
                       placeholder="First Name"
                       value={values.fname}
                       onChange={handleChange}
-                      style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}
                     />
-                  </div>
-                  <div className="mb-2">
-                    <input
+                    <Form.Control.Feedback type="invalid">First name is required</Form.Control.Feedback>
+                  </Form.Group>
+
+                  <Form.Group className="mb-2" style={{ maxWidth: '400px', margin: 'auto' }}>
+                    <Form.Control
+                      required
                       type="text"
                       name="lname"
-                      className="form-control"
                       placeholder="Last Name"
                       value={values.lname}
                       onChange={handleChange}
-                      style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}
                     />
-                  </div>
-                  <div className="mb-2">
-                    <input
-                      type="number"
+                    <Form.Control.Feedback type="invalid">Last name is required</Form.Control.Feedback>
+                  </Form.Group>
+
+                  <Form.Group className="mb-2" style={{ maxWidth: '400px', margin: 'auto' }}>
+                    <Form.Control
+                      required
+                      type="tel"
                       name="phonenumber"
-                      className="form-control"
                       placeholder="Phone Number"
                       value={values.phonenumber}
                       onChange={handleChange}
-                      style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}
                     />
-                  </div>
-                  <div className="mb-2">
-                    <input
+                    <Form.Control.Feedback type="invalid">Phone number is required</Form.Control.Feedback>
+                  </Form.Group>
+
+                  <Form.Group className="mb-2" style={{ maxWidth: '400px', margin: 'auto' }}>
+                    <Form.Control
+                      required
                       type="email"
                       name="email"
-                      className="form-control"
                       placeholder="Email Address"
                       value={values.email}
                       onChange={handleChange}
-                      style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}
                     />
-                  </div>
-                  <div className="mb-2">
-                    <div className="input-group" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
-                      <input
-                        type="password"
-                        name="password"
-                        className="form-control"
-                        placeholder="Password"
-                        value={values.password}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
+                    <Form.Control.Feedback type="invalid">Valid email is required</Form.Control.Feedback>
+                  </Form.Group>
 
-                  <div className="d-flex justify-content-center mt-3">
-                    <button
-                      type="submit"
-                      className="btn rounded-pill"
-                      style={{
-                        width: '300px',
-                        backgroundColor: '#0FC5BB',
-                        borderColor: '#0FC5BB',
-                        color: '#fff',
-                        fontWeight: 500
-                      }}
-                    >
+                  <Form.Group className="mb-3" style={{ maxWidth: '400px', margin: 'auto' }}>
+                    <Form.Control
+                      required
+                      type="password"
+                      name="password"
+                      placeholder="Password"
+                      value={values.password}
+                      onChange={handleChange}
+                    />
+                    <Form.Control.Feedback type="invalid">Password is required</Form.Control.Feedback>
+                  </Form.Group>
+
+                  {/* Submit */}
+                  <div className="text-center">
+                    <Button type="submit" className="rounded-pill"
+                      style={{ width: '300px', backgroundColor: '#0FC5BB', borderColor: '#0FC5BB' }}>
                       Sign Up
-                    </button>
-                    
-
+                    </Button>
                   </div>
 
                    {/* Divider */}
@@ -212,28 +176,15 @@ function SignupForm() {
                       Sign In
                     </button>
                   </div>
-                </form>
+                </Form>
               </div>
             </div>
 
-            {/* Right: Welcome */}
-            <div
-              className="col-5 d-flex flex-column justify-content-center align-items-center"
-              style={{
-                background: '#0FC5BB',
-                borderTopRightRadius: '10px',
-                borderBottomRightRadius: '10px',
-                color: '#fff',
-                height: '600px'
-              }}
-            >
-              <div className="text-center px-4 w-100">
-                <div className="h2 mb-3" style={{ fontWeight: 700 }}>Welcome folks</div>
-                <div style={{ fontSize: '18px', fontWeight: 400 }}>
-                  Enter your personal details<br />
-                  and start your journey with us
-                </div>
-              </div>
+            {/* Right Side */}
+            <div className="col-5 d-flex flex-column justify-content-center align-items-center"
+              style={{ background: '#0FC5BB', color: '#fff', borderRadius: '0 10px 10px 0' }}>
+              <h2>Welcome Folks</h2>
+              <p>Enter your personal details and start your journey with us</p>
             </div>
 
           </div>
@@ -241,7 +192,7 @@ function SignupForm() {
       </div>
       <Footer />
     </>
-  )
+  );
 }
 
 export default SignupForm;

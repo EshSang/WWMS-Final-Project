@@ -5,6 +5,12 @@ export default function CustomerOrders() {
   return (
     <div>
       <TopNavbar/>
+       <h1>CustomerOrders</h1>
+       <h1>CustomerOrders</h1>
+       <h1>CustomerOrders</h1>
+       <h1>CustomerOrders</h1>
+       <h1>CustomerOrders</h1>
+       
     </div>
   )
 }

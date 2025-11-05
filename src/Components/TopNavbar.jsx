@@ -1,21 +1,44 @@
 import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+
 
 export default function TopNavbar() {
 
     const location = useLocation();
-    const { selectedType } = location.state || {}; // Access passed value
+    const { selectedType: stateSelectedType } = location.state || {}; // Access passed value
+
+    const navigate = useNavigate();
     
-
-    console.log("Selected Type in Navbar:", selectedType);
-
-    // Example: You can set this from your login logic
-    // (e.g., localStorage.getItem("role") or context API)
-
-    //const userRole = localStorage.getItem("role"); // "worker" or "customer"
-
-    const userRole = selectedType ; // For demonstration, set role here
+    // Get selectedType from state, sessionStorage, or infer from URL path
+    let userRole;
+    if (stateSelectedType) {
+        // If state has it, use it and save to sessionStorage
+        userRole = stateSelectedType;
+        sessionStorage.setItem("selectedType", stateSelectedType);
+    } else {
+        // Try to get from sessionStorage
+        const storedType = sessionStorage.getItem("selectedType");
+        if (storedType) {
+            userRole = storedType;
+        } else {
+            // Infer from URL path as fallback
+            const path = location.pathname;
+            if (path.startsWith("/worker")) {
+                userRole = "Worker";
+                sessionStorage.setItem("selectedType", "Worker");
+            } else if (path.startsWith("/customer")) {
+                userRole = "Customer";
+                sessionStorage.setItem("selectedType", "Customer");
+            } else {
+                // Default to Customer if path doesn't match
+                userRole = "Customer";
+            }
+        }
+    }
+    
+    console.log("Selected Type in Navbar:", userRole);
 
     // Worker navigation links
     const workerLinks = [
@@ -38,7 +61,12 @@ export default function TopNavbar() {
     ];
 
     // Choose links based on role
-    const navLinks = userRole == "Worker" ? workerLinks : customerLinks;
+    const navLinks = userRole === "Worker" ? workerLinks : customerLinks;
+    
+
+    const handleUserProfileClick = () => {
+    navigate("profile");
+  };
 
     return (
         <div>
@@ -71,6 +99,8 @@ export default function TopNavbar() {
                         <div className="ms-auto d-flex align-items-center mt-2 mt-lg-0">
                             <span className="me-2 small text-muted">Hello,</span>
                             <span className="fw-medium me-3">Eshana Sangeeth</span>
+                            <Link to="/profile">
+                            <button className="cursor-pointer bg-transparent border-0 p-0">
                             <img
                                 src="/Profile.png"
                                 alt="Profile"
@@ -79,6 +109,8 @@ export default function TopNavbar() {
                                 height="40"
                                 style={{ objectFit: "cover" }}
                             />
+                            </button>
+                            </Link>
                         </div>
                     </Navbar.Collapse>
                 </Container>

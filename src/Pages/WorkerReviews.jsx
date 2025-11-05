@@ -11,7 +11,11 @@ export default function WorkerReviews() {
     <div>
       {/* Navbar */}
             <TopNavbar/>
-            <Footer/>
+            <h1>WorkerReviews</h1>
+            <h1>WorkerReviews</h1>
+            <h1>WorkerReviews</h1>
+            <h1>WorkerReviews</h1>
+            <h1>WorkerReviews</h1>
     </div>
   )
 }
