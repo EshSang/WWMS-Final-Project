@@ -47,7 +47,7 @@ function SigninForm() {
     // }
 
     try {
-      const res = await axios.post('http://localhost:8081/', { email, password });
+      const res = await axios.post('http://localhost:8081/signin', { email, password });
 
       toast.success("✅ Login Success!");
       localStorage.setItem("token", res.data.token);
@@ -57,6 +57,10 @@ function SigninForm() {
       toast.error(err.response?.data?.message || "❌ Login Failed");
     }
   };
+
+  const handleLoginHome = () => {
+    navigate("/home");
+  }
 
   return (
     <>
@@ -80,7 +84,8 @@ function SigninForm() {
                 <form
                   noValidate
                   className={validated ? "was-validated" : "mx-auto"}
-                  onSubmit={handleLogin}
+                  //onSubmit={handleLogin}
+                  onSubmit={handleLoginHome}
                 >
                   {/* Email input */}
                   <div className="mb-2" style={{maxWidth: '400px', margin: '0 auto'}}>

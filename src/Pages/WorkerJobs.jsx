@@ -8,11 +8,16 @@ import { ArrowBigRightDash } from 'lucide-react';
 import TopNavbar from '../Components/TopNavbar';
 import Footer from '../Components/Footer';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function WorkerJobs() {
 
-
+    const navigate = useNavigate();
     const [jobs, setJobs] = useState([]);
+
+    // for search functionality
+    const [searchTerm, setSearchTerm] = useState("");
+
 
     useEffect(() => {
         axios.get("http://localhost:8081/available_jobs")
@@ -29,47 +34,21 @@ export default function WorkerJobs() {
         navigate("/workermyservice");
     };
 
-    
 
-    //console.log("avaial jobs:", jobs);
 
-    // const jobs = [
-    //     {
-    //         id: 1,
-    //         title: 'Need Plumber',
-    //         description: 'I need a good plumber for fix my wash room tap',
-    //         location: 'Maharagama',
-    //         date: '02 March 2025',
-    //     },
-    //     {
-    //         id: 2,
-    //         title: 'Need Electrician',
-    //         description: 'I need a good electrician for fix the current issue my shop',
-    //         location: 'Galle',
-    //         date: '05 March 2025',
-    //     },
-    //     {
-    //         id: 3,
-    //         title: 'Painter',
-    //         description: 'I need a good painter for paint my house',
-    //         location: 'Anuradhapura',
-    //         date: '09 March 2025',
-    //     },
-    //     {
-    //         id: 4,
-    //         title: 'Garagemon',
-    //         description: 'I need a good painter for paint my house',
-    //         location: 'Anuradhapura',
-    //         date: '09 March 2025',
-    //     },
-    //     {
-    //         id: 5,
-    //         title: 'Painter',
-    //         description: 'I need a good painter for paint my house',
-    //         location: 'Anuradhapura',
-    //         date: '09 March 2025',
-    //     },
-    // ];
+    // FILTER
+    const filteredJobs = jobs.filter((job) =>
+        job.job_title.toLowerCase().includes(searchTerm.toLowerCase()) 
+
+        //|| job.job_description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // SORT BY MOST RECENT
+    const sortedJobs = [...filteredJobs].sort(
+        (a, b) => new Date(b.job_posted_date) - new Date(a.job_posted_date)
+    );
+
+
 
     return (
         <div>
@@ -80,21 +59,28 @@ export default function WorkerJobs() {
 
                 {/* Search bar */}
                 <Container className="my-4">
-                    <InputGroup className="mb-3 mt-5" style={{ width: "350px" }}>
+                    <InputGroup style={{ width: "350px" }}>
                         <InputGroup.Text>
                             <i className="bi bi-search"></i>
                         </InputGroup.Text>
-                        <Form.Control type="text" placeholder="Search Jobs" />
+                        <Form.Control 
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        type="text" 
+                        placeholder="Search Jobs" />
                     </InputGroup>
                     <hr className="mt-4 mb-4" />
-                    <Button variant="outline-dark" className="mb-3">
+                    <Button 
+                    disabled 
+                    variant="outline-dark" 
+                    className="mb-3 no-hover">
+
                         Most Recent
                     </Button>
 
                     {/* Job Cards */}
                     <div>
-                        {/* {jobs.map((job) => ( */}
-                        {jobs.map((job, index) => (
+                        {/* {jobs.map((job, index) => ( */}
+                        {sortedJobs.map((job, index) => (
                             <Card key={index} className="mb-3 border-0 shadow-sm">
                                 <Card.Body className="d-flex justify-content-between align-items-center bg-light-subtle">
                                     <div>
@@ -112,9 +98,10 @@ export default function WorkerJobs() {
                                             })}
                                         </div>
                                     </div>
-                                    {/* <FileEarmarkPlus size={30} className="text-info" /> */}
-                                    {/* <ArrowBigRightDash className='cursor-pointer' /> */}
-                                    <ArrowRight size={20} className='cursor-pointer text-info' />
+
+                                    {/* <button onClick={handleViewJob} type="button" class="btn btn-outline-info btn-sm"> View </button>  */}
+                                    <button onClick={() => navigate(`/workerviewjob/${job.job_id}`, { state: job })} type="button" className="btn btn-light btn-sm"> View </button>
+
 
                                 </Card.Body >
                             </Card>

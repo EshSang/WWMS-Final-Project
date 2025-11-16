@@ -69,11 +69,11 @@ export default function TopNavbar() {
   };
 
     return (
-        <div>
+        <div className="pb-5">
             <Navbar
                 bg="white"
                 expand="lg"
-                className="shadow-sm px-4 position-fixed w-100"
+                className="shadow-sm px-4 w-100 postion-fixed-top"
                 style={{ zIndex: 1000 }}
             >
                 <Container fluid>

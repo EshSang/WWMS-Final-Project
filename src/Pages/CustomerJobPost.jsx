@@ -1,37 +1,31 @@
-import React from 'react'
-import TopNavbar from '../Components/TopNavbar'
-import { Button, Col, Container, Form, Row } from 'react-bootstrap'
+import React, { useState, useEffect } from 'react';
+import TopNavbar from '../Components/TopNavbar';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import Footer from "../Components/Footer";
-import { useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function CustomerJobPost() {
 
-  const [formData, setFormData] = useState({
-    jobTitle: "",
-    jobLocation: "",
-    jobDescription: "",
+  const navigate = useNavigate();
+  const [validated, setValidated] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const [formData, setformData] = useState({
+    job_title: "",
+    job_location: "",
+    job_description: "",
     skills: "",
-    jobPostedDate: "",
-    customerName: "",
-    customerPhone: "",
-    customerAddress: "",
+    job_posted_date: "",
+    customer_name: "",
+    customer_phone: "",
+    customer_address: ""
   });
 
   const [errors, setErrors] = useState({});
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-
-    // Remove error when user types something
-    if (value.trim() !== "") {
-      setErrors({
-        ...errors,
-        [name]: "",
-      });
-    }
-  };
 
   const validateForm = () => {
     let formErrors = {};
@@ -44,191 +38,288 @@ export default function CustomerJobPost() {
     return Object.keys(formErrors).length === 0;
   };
 
+  const handleChange = (event) => {
+    setformData({ ...formData, [event.target.name]: event.target.value });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log("Form Data:", formData);
-      try {
-        const res = await axios.post("http://localhost:8081/customerjobpost", formData);
-        alert(res.data.message || "Form submitted successfully!");
-        setFormData({
-          jobTitle: "",
-          jobLocation: "",
-          jobDescription: "",
-          skills: "",
-          jobPostedDate: "",
-          customerName: "",
-          customerPhone: "",
-          customerAddress: ""
-        });
-        // Clear errors after successful submission
-        setErrors({});
-      } catch (error) {
-        const errorMessage = error.response?.data?.message || error.message || "Error submitting form. Please try again.";
-        alert(errorMessage);
-        console.error("Error details:", error);
-      }
-    } else {
-      alert("Please fill all required fields.");
+    setValidated(true);
+
+    if (!validateForm()) {
+      return;
     }
+
+    axios.post("http://localhost:8081/customerjobpost", formData)
+      .then(res => {
+        if (res.data === "This record already exists" || res.data?.message === "This record already exists") {
+          setErrorMessage("⚠️ This record is already there. Please use a different one.");
+          toast.error("⚠️ This record already exists!");
+          return;
+        }
+
+        setSuccessMessage("✅ Submitted successfully!");
+        toast.success("✅ Submitted successfully!");
+
+        setformData({
+          job_title: "",
+          job_location: "",
+          job_description: "",
+          skills: "",
+          job_posted_date: "",
+          customer_name: "",
+          customer_phone: "",
+          customer_address: ""
+        });
+
+        setTimeout(() => navigate("/"), 2000);
+      })
+      .catch(() => {
+        setErrorMessage("❌ Something went wrong. Please try again later.");
+        toast.error("❌ Something went wrong. Please try again later.");
+      });
   };
-  
+
+  //Display today date in the date picker
+  useEffect(() => {
+  const today = new Date();
+  const formattedDate = today.toISOString().split("T")[0]; // format: YYYY-MM-DD
+  setformData((prevData) => ({
+    ...prevData,
+    job_posted_date: formattedDate,
+  }));
+}, []);
+
   return (
     <>
-      <div>
-      <TopNavbar/>
+      <TopNavbar />
 
-      <Container className="pt-5">
-      <h3 className="text-left mb-4 pt-5">Add Job Details</h3>
-      <hr className="mb-4" />
-      <Form onSubmit={handleSubmit}>
-        <Row>
-          <Col md={6}>
-            <Form.Group className="mb-3" controlId="jobTitle">
-              <Form.Label>Job Title</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter job title"
-                name="jobTitle"
-                value={formData.jobTitle}
-                onChange={handleChange}
-                isInvalid={!!errors.jobTitle}
-              />
-                <Form.Control.Feedback type="invalid">
-                  {errors.jobTitle}
-                </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
+     
+       
+      <Container>
+        <h3>Add Job Details</h3>
+        <hr/>
 
-          <Col md={6}>
-            <Form.Group className="mb-3" controlId="jobLocation">
-              <Form.Label>Job Location</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter job location"
-                name="jobLocation"
-                value={formData.jobLocation}
-                onChange={handleChange}
-                isInvalid={!!errors.jobLocation}
-              />
-              <Form.Control.Feedback type="invalid">
-                  {errors.jobLocation}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-        </Row>
+        <Form noValidate onSubmit={handleSubmit}>
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Job Title</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter job title"
+                  name="job_title"
+                  value={formData.job_title}
+                  //onChange={handleChange}
+                  onChange={(e) => {
+                  setformData({ ...formData, job_title: e.target.value });
 
-        <Form.Group className="mb-3" controlId="jobDescription">
-          <Form.Label>Job Description</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={3}
-            placeholder="Enter job description"
-            name="jobDescription"
-            value={formData.jobDescription}
-            onChange={handleChange}
-            isInvalid={!!errors.jobDescription}
-          />
-          <Form.Control.Feedback type="invalid">
-            {errors.jobDescription}
-          </Form.Control.Feedback>
-        </Form.Group>
+                  // Clear validation error for this field
+                  if (errors.job_title) {
+                  setErrors({ ...errors, job_title: "" });
+                    }
+                  }}
+                  isInvalid={!!errors.job_title}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">{errors.job_title}</Form.Control.Feedback>
+              </Form.Group>
+            </Col>
 
-        <Row>
-          <Col md={6}>
-            <Form.Group className="mb-3" controlId="skills">
-              <Form.Label>Skills</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter required skills"
-                name="skills"
-                value={formData.skills}
-                onChange={handleChange}
-                isInvalid={!!errors.skills}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.skills}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Job Location</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter job location"
+                  name="job_location"
+                  value={formData.job_location}
+                  //onChange={handleChange}
+                  onChange={(e) => {
+                  setformData({ ...formData, job_location: e.target.value });
 
-          <Col md={6}>
-            <Form.Group className="mb-3" controlId="jobPostedDate">
-              <Form.Label>Job Posted Date</Form.Label>
-              <Form.Control
-                type="date"
-                name="jobPostedDate"
-                value={formData.jobPostedDate}
-                onChange={handleChange}
-                isInvalid={!!errors.jobPostedDate}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.jobPostedDate}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-        </Row>
+                  // Clear validation error for this field
+                  if (errors.job_location) {
+                  setErrors({ ...errors, job_location: "" });
+                    }
+                  }}
+                  isInvalid={!!errors.job_location}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">{errors.job_location}</Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+          </Row>
 
-        <Row>
-          <Col md={6}>
-            <Form.Group className="mb-3" controlId="customerName">
-              <Form.Label>Customer Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter customer name"
-                name="customerName"
-                value={formData.customerName}
-                onChange={handleChange}
-                isInvalid={!!errors.customerName}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.customerName}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
+          <Form.Group className="mb-3">
+            <Form.Label>Job Description</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              placeholder="Enter job description"
+              name="job_description"
+              value={formData.job_description}
+              //onChange={handleChange}
+              onChange={(e) => {
+                  setformData({ ...formData, job_description: e.target.value });
 
-          <Col md={6}>
-            <Form.Group className="mb-3" controlId="customerPhone">
-              <Form.Label>Customer Phone</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter customer phone number"
-                name="customerPhone"
-                value={formData.customerPhone}
-                onChange={handleChange}
-                isInvalid={!!errors.customerPhone}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.customerPhone}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-        </Row>
+                  // Clear validation error for this field
+                  if (errors.job_description) {
+                  setErrors({ ...errors, job_description: "" });
+                    }
+              }}
+              isInvalid={!!errors.job_description}
+              required
+            />
+            <Form.Control.Feedback type="invalid">{errors.job_description}</Form.Control.Feedback>
+          </Form.Group>
 
-        <Form.Group className="mb-3" controlId="customerAddress">
-          <Form.Label>Customer Address</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter customer address"
-            name="customerAddress"
-            value={formData.customerAddress}
-            onChange={handleChange}
-            isInvalid={!!errors.customerAddress}
-          />
-          <Form.Control.Feedback type="invalid">
-            {errors.customerAddress}
-          </Form.Control.Feedback>
-        </Form.Group>
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Skills</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter required skills"
+                  name="skills"
+                  value={formData.skills}
+                  //onChange={handleChange}
+                  onChange={(e) => {
+                  setformData({ ...formData, skills: e.target.value });
 
-        <div className="text-center">
-          <Button variant="primary" type="submit" className="px-5">
-            Submit
-          </Button>
-        </div>
-      </Form>
-    </Container>
-    
-    </div>
+                  // Clear validation error for this field
+                  if (errors.skills) {
+                  setErrors({ ...errors, skills: "" });
+                    }
+                  }}
+                  isInvalid={!!errors.skills}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">{errors.skills}</Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Job Posted Date</Form.Label>
+                <Form.Control
+                  type="date"
+                  name="job_posted_date"
+                  value={formData.job_posted_date}
+                  //onChange={handleChange}
+                  disabled
+                  onChange={(e) => {
+                  setformData({ ...formData, job_posted_date: e.target.value });
+
+                  // Clear validation error for this field
+                  if (errors.job_posted_date) {
+                  setErrors({ ...errors, job_posted_date: "" });
+                    }
+                  }}
+                  isInvalid={!!errors.job_posted_date}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">{errors.job_posted_date}</Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Customer Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter customer name"
+                  name="customer_name"
+                  value={formData.customer_name}
+                  //onChange={handleChange}
+                  onChange={(e) => {
+                  setformData({ ...formData, customer_name: e.target.value });
+
+                  // Clear validation error for this field
+                  if (errors.customer_name) {
+                  setErrors({ ...errors, customer_name: "" });
+                    }
+                  }}
+                  isInvalid={!!errors.customer_name}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">{errors.customer_name}</Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Customer Phone</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter phone number"
+                  name="customer_phone"
+                  value={formData.customer_phone}
+                  //onChange={handleChange}
+                  //pattern="[0-9]*"
+                  onChange={(e) => {
+                    const numericValue = e.target.value.replace(/[^0-9]/g, ''); // remove non-numeric
+                    setformData({ ...formData, customer_phone: numericValue });
+
+                    // Clear validation error for this field
+                  if (errors.customer_phone) {
+                  setErrors({ ...errors, customer_phone: "" });
+                    }
+                  }}
+                  maxLength={10} // optional: limit to 10 digits
+                  isInvalid={!!errors.customer_phone}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">{errors.customer_phone}</Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Customer Address</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter customer address"
+              name="customer_address"
+              value={formData.customer_address}
+              //onChange={handleChange}
+              onChange={(e) => {
+                  setformData({ ...formData, customer_address: e.target.value });
+
+                  // Clear validation error for this field
+                  if (errors.customer_address) {
+                  setErrors({ ...errors, customer_address: "" });
+                    }
+              }}
+              isInvalid={!!errors.customer_address}
+              required
+            />
+            <Form.Control.Feedback type="invalid">{errors.customer_address}</Form.Control.Feedback>
+          </Form.Group>
+
+          <div className="text-center mb-5 pb-5">
+            <Button variant="primary" type="submit" className="px-5">
+              Submit
+            </Button>
+          </div>
+        </Form>
+      </Container>
+
+      
+      <Footer />
+
+      {/* ✅ Toast notification container */}
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+      />
     </>
-  )
+  );
 }

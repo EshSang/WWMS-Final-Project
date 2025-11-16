@@ -18,6 +18,7 @@ import CustomerReviews from './Pages/CustomerReviews';
 import CustomerAnalytics from './Pages/CustomerAnalytics';
 
 import UserProfile from './Pages/UserProfile';
+import WorkerViewJob from './Pages/WorkerViewJob';
 
 
 
@@ -41,6 +42,8 @@ function App() {
           <Route path="/workerreviews" element={<WorkerReviews/>} />
           <Route path="/workeranalytics" element={<WorkerAnalytics/>} />
 
+          <Route path="/workerviewjob/:id" element={<WorkerViewJob/>} />
+
           {/* Customer Pages */}
           <Route path="/customerjobs" element={<CustomerJobs/>} />
           <Route path="/customerjobpost" element={<CustomerJobPost/>} />
@@ -50,6 +53,8 @@ function App() {
           <Route path="/customeranalytics" element={<CustomerAnalytics/>} />
 
           <Route path="/profile" element={<UserProfile/>} />
+
+
 
           
 
