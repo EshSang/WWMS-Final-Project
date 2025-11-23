@@ -1,21 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaUser, FaEdit, FaSignOutAlt, FaCamera } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
+import axiosInstance from "../api/axios";
 
 export default function Profile() {
   const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState({
-    name: "Eshana Sangeeth",
-    email: "eshana@example.com",
-    phone: "0771234567",
-    address: "Colombo, Sri Lanka",
-    role: "Customer",
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    role: "",
     avatar: "https://cdn-icons-png.flaticon.com/512/4140/4140037.png",
   });
 
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const res = await axiosInstance.get('/api/user/profile');
+      const userData = res.data;
+      setProfile({
+        name: `${userData.fname} ${userData.lname}`,
+        email: userData.email,
+        phone: userData.phonenumber || "",
+        address: "",
+        role: sessionStorage.getItem("selectedType") || "",
+        avatar: "https://cdn-icons-png.flaticon.com/512/4140/4140037.png",
+      });
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      toast.error("Failed to load profile");
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -35,11 +63,20 @@ export default function Profile() {
   };
 
   const handleLogOutClick = () => {
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("selectedType");
+    logout();
     toast.success("✅ Logout Successful!");
-    setTimeout(() => navigate("/"), 800);
+    setTimeout(() => navigate("/signin"), 800);
   };
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

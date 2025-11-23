@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import Footer from "./Footer"
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
+import axiosInstance from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from "react-toastify";
 
@@ -12,6 +13,7 @@ function SigninForm() {
   const [validated, setValidated] = useState(false);
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -47,20 +49,16 @@ function SigninForm() {
     // }
 
     try {
-      const res = await axios.post('http://localhost:8081/signin', { email, password });
+      const res = await axiosInstance.post('/signin', { email, password });
 
       toast.success("✅ Login Success!");
-      localStorage.setItem("token", res.data.token);
+      login(res.data.token);
 
       setTimeout(() => navigate("/home"), 1500);
     } catch (err) {
       toast.error(err.response?.data?.message || "❌ Login Failed");
     }
   };
-
-  const handleLoginHome = () => {
-    navigate("/home");
-  }
 
   return (
     <>
@@ -84,8 +82,7 @@ function SigninForm() {
                 <form
                   noValidate
                   className={validated ? "was-validated" : "mx-auto"}
-                  //onSubmit={handleLogin}
-                  onSubmit={handleLoginHome}
+                  onSubmit={handleLogin}
                 >
                   {/* Email input */}
                   <div className="mb-2" style={{maxWidth: '400px', margin: '0 auto'}}>

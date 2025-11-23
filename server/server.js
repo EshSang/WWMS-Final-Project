@@ -51,53 +51,85 @@ app.post("/signin", (req, res) => {
     return res.status(400).json({ message: "Email & Password required" });
 
   db.query("SELECT * FROM user_details WHERE email = ?", [email], async (err, result) => {
-    if (err) return res.status(500).json({ message: "Server error" });
-    if (result.length === 0) return res.status(401).json({ message: "Invalid credentials" });
+    if (err) {
+      console.error("Login DB error:", err);
+      return res.status(500).json({ message: "Server error" });
+    }
+
+    if (result.length === 0) {
+      console.log("User not found:", email);
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
     const user = result[0];
-    const isMatch = await bcrypt.compare(password, user.password);
+    console.log("Login attempt for:", email);
 
-    if (!isMatch)
-      return res.status(401).json({ message: "Invalid credentials" });
+    try {
+      const isMatch = await bcrypt.compare(password, user.password);
+      console.log("Password match:", isMatch);
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email, fname: user.fname, lname: user.lname },
-      process.env.JWT_SECRET || "SECRET_KEY",
-      { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
-    );
+      if (!isMatch) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
 
-    res.json({ message: "Login Successful", token });
+      const token = jwt.sign(
+        { id: user.id, email: user.email, fname: user.fname, lname: user.lname },
+        process.env.JWT_SECRET || "SECRET_KEY",
+        { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
+      );
+
+      res.json({ message: "Login Successful", token });
+    } catch (compareError) {
+      console.error("Password compare error:", compareError);
+      return res.status(500).json({ message: "Authentication error" });
+    }
   });
 });
 
 
 
 //Signup backend
-app.post('/signup', (req, res) => {
+app.post('/signup', async (req, res) => {
   const { fname, lname, phonenumber, email, password } = req.body;
 
   if (!fname || !lname || !phonenumber || !email || !password) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  const insertSql = "INSERT INTO user_details(`fname`,`lname`,`phonenumber`,`email`,`password`) VALUES (?)";
+  try {
+    // Check if user already exists
+    const checkSql = "SELECT * FROM user_details WHERE email = ?";
+    db.query(checkSql, [email], async (checkErr, checkResult) => {
+      if (checkErr) return res.status(500).json({ message: 'Database error' });
 
-  bcrypt.hash(password, 10, (hashErr, hashedPassword) => {
-    if (hashErr) return res.status(500).json({ message: 'Error securing password' });
+      if (checkResult.length > 0) {
+        return res.status(400).json({ message: 'User already exists' });
+      }
 
-    const values = [
-      fname,
-      lname,
-      phonenumber,
-      email,
-      hashedPassword
-    ];
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-    db.query(insertSql, [values], (err, data) => {
-      if (err) return res.status(500).json(err);
-      return res.json({ message: 'Signup successful' });
+      const insertSql = "INSERT INTO user_details(`fname`,`lname`,`phonenumber`,`email`,`password`) VALUES (?)";
+      const values = [
+        fname,
+        lname,
+        phonenumber,
+        email,
+        hashedPassword
+      ];
+
+      db.query(insertSql, [values], (err, data) => {
+        if (err) {
+          console.error('Signup error:', err);
+          return res.status(500).json({ message: 'Error creating user' });
+        }
+        return res.json({ message: 'Signup successful' });
+      });
     });
-  });
+  } catch (error) {
+    console.error('Signup error:', error);
+    return res.status(500).json({ message: 'Error securing password' });
+  }
 });
 
 

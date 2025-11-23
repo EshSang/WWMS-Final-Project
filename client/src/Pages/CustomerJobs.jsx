@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../api/axios";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { FaRegCalendarAlt } from "react-icons/fa";
@@ -12,8 +12,8 @@ const CustomerJobs = () => {
 
   // Fetch jobs from backend
   useEffect(() => {
-    axios
-      .get("http://localhost:8081/user_details") // your backend route
+    axiosInstance
+      .get("/available_jobs")
       .then((res) => setJobs(res.data))
       .catch((err) => console.error("Error fetching jobs:", err));
   }, []);

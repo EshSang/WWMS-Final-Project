@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TopNavbar from '../Components/TopNavbar';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import Footer from "../Components/Footer";
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
@@ -56,7 +56,7 @@ export default function CustomerJobPost() {
       return;
     }
 
-    axios.post("http://localhost:8081/customerjobpost", formData)
+    axiosInstance.post("/customerjobpost", formData)
       .then(res => {
         if (res.data === "This record already exists" || res.data?.message === "This record already exists") {
           setErrorMessage("⚠️ This record is already there. Please use a different one.");
@@ -105,7 +105,7 @@ const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
-    axios.get("http://localhost:8081/job_category")
+    axiosInstance.get("/job_category")
       .then((res) => {
         if (!isMounted) return;
         // Handle common API response shapes

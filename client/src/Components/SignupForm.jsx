@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 
 function SignupForm() {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ function SignupForm() {
       return;
     }
 
-    axios.post("http://localhost:8081/signup", values)
+    axiosInstance.post("/signup", values)
       .then(res => {
         if (res.data === "User already exists" || res.data?.message === "User already exists") {
           setErrorMessage("⚠️ This email is already registered. Please use a different one.");

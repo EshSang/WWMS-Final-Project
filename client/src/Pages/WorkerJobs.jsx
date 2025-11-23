@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { ArrowBigRightDash } from 'lucide-react';
 import TopNavbar from '../Components/TopNavbar';
 import Footer from '../Components/Footer';
-import axios from 'axios';
+import axiosInstance from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 
 export default function WorkerJobs() {
@@ -20,7 +20,7 @@ export default function WorkerJobs() {
 
 
     useEffect(() => {
-        axios.get("http://localhost:8081/available_jobs")
+        axiosInstance.get("/available_jobs")
             .then(res => {
                 console.log("Response data:", res.data);
                 setJobs(res.data)

@@ -2,6 +2,8 @@ import './App.css'
 import SignUp from './Pages/SignUp'
 import SignIn from './Pages/SignIn'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './Components/ProtectedRoute';
 import Home from './Pages/Home';
 import WorkerJobs from './Pages/WorkerJobs';
 import WorkerMyService from './Pages/WorkerMyService';
@@ -13,7 +15,7 @@ import WorkerAnalytics from './Pages/WorkerAnalytics';
 import CustomerJobs from './Pages/CustomerJobs';
 import CustomerJobPost from './Pages/CustomerJobPost';
 import CustomerOrders from './Pages/CustomerOrders';
-import CustomerPostedJobs from './Pages/CustomerPostedJobs'; 
+import CustomerPostedJobs from './Pages/CustomerPostedJobs';
 import CustomerReviews from './Pages/CustomerReviews';
 import CustomerAnalytics from './Pages/CustomerAnalytics';
 
@@ -27,39 +29,41 @@ function App() {
 
   return (
     <>
-      <Router>
-        <Routes>
-          
-          <Route path="/" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/home" element={<Home />} />
+      <AuthProvider>
+        <Router>
+          <Routes>
 
-          {/* Worker Pages */}
-          <Route path="/workerjob" element={<WorkerJobs/>} />
-          <Route path="/workermyservice" element={<WorkerMyService/>} />
-          <Route path="/workerorders" element={<WorkerOrders/>} />
-          <Route path="/workerearning" element={<WorkerEarning/>} />
-          <Route path="/workerreviews" element={<WorkerReviews/>} />
-          <Route path="/workeranalytics" element={<WorkerAnalytics/>} />
+            {/* Public Routes */}
+            <Route path="/" element={<SignIn />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
 
-          <Route path="/workerviewjob/:id" element={<WorkerViewJob/>} />
+            {/* Protected Routes */}
+            <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
 
-          {/* Customer Pages */}
-          <Route path="/customerjobs" element={<CustomerJobs/>} />
-          <Route path="/customerjobpost" element={<CustomerJobPost/>} />
-          <Route path="/customerorders" element={<CustomerOrders/>} />
-          <Route path="/customerpostedjobs" element={<CustomerPostedJobs/>} />
-          <Route path="/customerreviews" element={<CustomerReviews/>} /> 
-          <Route path="/customeranalytics" element={<CustomerAnalytics/>} />
+            {/* Worker Pages */}
+            <Route path="/workerjob" element={<ProtectedRoute><WorkerJobs/></ProtectedRoute>} />
+            <Route path="/workermyservice" element={<ProtectedRoute><WorkerMyService/></ProtectedRoute>} />
+            <Route path="/workerorders" element={<ProtectedRoute><WorkerOrders/></ProtectedRoute>} />
+            <Route path="/workerearning" element={<ProtectedRoute><WorkerEarning/></ProtectedRoute>} />
+            <Route path="/workerreviews" element={<ProtectedRoute><WorkerReviews/></ProtectedRoute>} />
+            <Route path="/workeranalytics" element={<ProtectedRoute><WorkerAnalytics/></ProtectedRoute>} />
+            <Route path="/workerviewjob/:id" element={<ProtectedRoute><WorkerViewJob/></ProtectedRoute>} />
 
-          <Route path="/profile" element={<UserProfile/>} />
+            {/* Customer Pages */}
+            <Route path="/customerjobs" element={<ProtectedRoute><CustomerJobs/></ProtectedRoute>} />
+            <Route path="/customerjobpost" element={<ProtectedRoute><CustomerJobPost/></ProtectedRoute>} />
+            <Route path="/customerorders" element={<ProtectedRoute><CustomerOrders/></ProtectedRoute>} />
+            <Route path="/customerpostedjobs" element={<ProtectedRoute><CustomerPostedJobs/></ProtectedRoute>} />
+            <Route path="/customerreviews" element={<ProtectedRoute><CustomerReviews/></ProtectedRoute>} />
+            <Route path="/customeranalytics" element={<ProtectedRoute><CustomerAnalytics/></ProtectedRoute>} />
 
+            {/* User Profile */}
+            <Route path="/profile" element={<ProtectedRoute><UserProfile/></ProtectedRoute>} />
 
-
-          
-
-        </Routes>
-      </Router>
+          </Routes>
+        </Router>
+      </AuthProvider>
 
     </>
   )
