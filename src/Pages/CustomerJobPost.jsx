@@ -22,8 +22,12 @@ export default function CustomerJobPost() {
     job_posted_date: "",
     customer_name: "",
     customer_phone: "",
-    customer_address: ""
+    customer_address: "", 
+    job_status: "", 
+    submitted_user_email: "", 
+    job_categoty: ""
   });
+
 
   const [errors, setErrors] = useState({});
 
@@ -37,6 +41,8 @@ export default function CustomerJobPost() {
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
   };
+
+  
 
   const handleChange = (event) => {
     setformData({ ...formData, [event.target.name]: event.target.value });
@@ -69,7 +75,10 @@ export default function CustomerJobPost() {
           job_posted_date: "",
           customer_name: "",
           customer_phone: "",
-          customer_address: ""
+          customer_address: "", 
+          job_status: "open", 
+          submitted_user_email: "eshana21@gmail.com", 
+          job_categoty: ""
         });
 
         setTimeout(() => navigate("/"), 2000);
@@ -90,11 +99,33 @@ export default function CustomerJobPost() {
   }));
 }, []);
 
+
+//Get categories from the database
+const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    axios.get("http://localhost:8081/job_category")
+      .then((res) => {
+        if (!isMounted) return;
+        // Handle common API response shapes
+        const payload = Array.isArray(res.data) ? res.data : (Array.isArray(res.data?.data) ? res.data.data : []);
+        setCategories(payload || []);
+      })
+      .catch((err) => {
+        if (!isMounted) return;
+        console.error("Failed to load categories:", err);
+      });
+
+    return () => { isMounted = false; };
+  }, []);
+
+
   return (
     <>
       <TopNavbar />
 
-     
+     <div>
        
       <Container>
         <h3>Add Job Details</h3>
@@ -150,6 +181,49 @@ export default function CustomerJobPost() {
               </Form.Group>
             </Col>
           </Row>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Category</Form.Label>
+              <Form.Select
+                name="category"
+                value={formData.categories}
+                onChange={(e) => {
+                  setformData({ ...formData, job_category: e.target.value });
+
+                  // Clear validation error for this field
+                  if (errors.job_category) {
+                    setErrors({ ...errors, job_category: "" });
+                  }
+                }}
+                isInvalid={!!errors.job_category}
+                required
+              >
+                {/* <option value="">-- Select Category --</option>
+                <option value="IT">IT</option>
+                <option value="Finance">Finance</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Engineering">Engineering</option>
+                <option value="HR">Human Resources</option> */}
+
+                <option value="">-- Select Category --</option>
+
+                {categories.map((cat) => {
+                  const key = cat.id ?? cat._id ?? cat.name ?? JSON.stringify(cat);
+                  const value = cat.name ?? cat.id ?? cat._id ?? "";
+                  const label = cat.name ?? cat.categories ?? value;
+                  return (
+                    <option key={key} value={value}>
+                      {label}
+                    </option>
+                  );
+                })}
+              </Form.Select>
+
+              <Form.Control.Feedback type="invalid">
+                {errors.category}
+              </Form.Control.Feedback>
+            </Form.Group>
+
 
           <Form.Group className="mb-3">
             <Form.Label>Job Description</Form.Label>
@@ -307,8 +381,12 @@ export default function CustomerJobPost() {
         </Form>
       </Container>
 
-      
       <Footer />
+
+      </div>
+
+
+      
 
       {/* ✅ Toast notification container */}
       <ToastContainer

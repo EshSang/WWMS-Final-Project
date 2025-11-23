@@ -43,7 +43,7 @@ export default function TopNavbar() {
     // Worker navigation links
     const workerLinks = [
         { path: "/workerjob", label: "Jobs" },
-        { path: "/workermyservice", label: "My Services" },
+        // { path: "/workermyservice", label: "My Services" },
         { path: "/workerorders", label: "Orders" },
         { path: "/workerearning", label: "Earning" },
         { path: "/workerreviews", label: "Reviews" },
