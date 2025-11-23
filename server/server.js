@@ -4,22 +4,27 @@
 // import bcrypt from "bcrypt";
 // import jwt from "jsonwebtoken";
 
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const authenticateToken = require('./middleware/auth');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json());
 
 //Database connection
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'wwms'
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'wwms'
 })
 
 // Test DB connection
@@ -28,8 +33,9 @@ db.connect((err) => {
   else console.log("Database connected successfully!");
 });
 
-app.listen(8081, ()=>{
-    console.log("Listening....");
+const PORT = process.env.PORT || 8081;
+app.listen(PORT, ()=>{
+    console.log(`Server listening on port ${PORT}...`);
 });
 
 //health check endpoint
@@ -55,9 +61,9 @@ app.post("/signin", (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
 
     const token = jwt.sign(
-      { id: user.id, email: user.email },
-      "SECRET_KEY",
-      { expiresIn: "1h" }
+      { id: user.id, email: user.email, fname: user.fname, lname: user.lname },
+      process.env.JWT_SECRET || "SECRET_KEY",
+      { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
     );
 
     res.json({ message: "Login Successful", token });
@@ -95,8 +101,25 @@ app.post('/signup', (req, res) => {
 });
 
 
-//Get all available jobs
-app.get("/available_jobs", (req, res) => {
+//Get current user profile (Protected route)
+app.get("/api/user/profile", authenticateToken, (req, res) => {
+  const userId = req.user.id;
+
+  const sql = "SELECT id, fname, lname, email, phonenumber FROM user_details WHERE id = ?";
+  db.query(sql, [userId], (err, result) => {
+    if (err) {
+      console.error("Error fetching user:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    if (result.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(result[0]);
+  });
+});
+
+//Get all available jobs (Protected route)
+app.get("/available_jobs", authenticateToken, (req, res) => {
   const sql = "SELECT * FROM available_jobs";
   db.query(sql, (err, data) => {
     if (err) {
@@ -108,8 +131,8 @@ app.get("/available_jobs", (req, res) => {
   });
 });
 
-// API Route to insert job
-app.post("/customerjobpost", (req, res) => {
+// API Route to insert job (Protected route)
+app.post("/customerjobpost", authenticateToken, (req, res) => {
   const {
     job_title,
     job_location,
@@ -164,8 +187,8 @@ app.post("/customerjobpost", (req, res) => {
 });
 
 
-// GET categories API
-app.get("/job_category", (req, res) => {
+// GET categories API (Protected route)
+app.get("/job_category", authenticateToken, (req, res) => {
   db.query("SELECT category FROM job_category", (err, results) => {
     if (err) {
       return res.status(500).json({ error: "DB error" });
