@@ -29,11 +29,19 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response?.status === 401) {
-      // Token expired or invalid
-      localStorage.removeItem('token');
-      sessionStorage.removeItem('selectedType');
-      window.location.href = '/signin';
+    // Only redirect on 401 if user is already logged in (has a token)
+    // Don't redirect on login/signup failures
+    const isAuthRoute = error.config?.url === '/signin' || error.config?.url === '/signup';
+
+    if (error.response?.status === 401 && !isAuthRoute) {
+      // Token expired or invalid - only redirect if already authenticated
+      const hasToken = localStorage.getItem('token');
+      if (hasToken) {
+        console.log('🔴 Token expired or invalid, redirecting to signin...');
+        localStorage.removeItem('token');
+        sessionStorage.removeItem('selectedType');
+        window.location.href = '/signin';
+      }
     }
     return Promise.reject(error);
   }
