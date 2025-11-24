@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { FaArrowLeft, FaMapMarkerAlt, FaRegCalendarAlt } from "react-icons/fa";
+import { FaArrowLeft, FaMapMarkerAlt, FaRegCalendarAlt, FaBriefcase, FaUser, FaPhone, FaHome } from "react-icons/fa";
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Container, Card, Badge, Row, Col } from "react-bootstrap";
 import TopNavbar from "../../Components/TopNavbar";
 import Footer from "../../Components/Footer";
-
+import './WorkerViewJob.css';
 
 export default function WorkerViewJob() {
 
@@ -20,126 +20,180 @@ export default function WorkerViewJob() {
 
     const [show, setShow] = useState(false);
 
+    // Calculate days ago
+    const getDaysAgo = (date) => {
+        const diff = new Date() - new Date(date);
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        if (days === 0) return 'Today';
+        if (days === 1) return 'Yesterday';
+        return `${days} days ago`;
+    };
+
     return (
-
-
-
         <div>
             <div className="min-vh-100 d-flex flex-column bg-light">
-                {/* Navbar */}
                 <TopNavbar />
 
+                <Container className="my-4">
+                    {/* Back Button */}
+                    <Button
+                        variant="link"
+                        className="text-decoration-none text-dark mb-3 p-0 back-button"
+                        onClick={handleBackWorkerJob}
+                    >
+                        <FaArrowLeft size={18} className="me-2" />
+                        Back to Jobs
+                    </Button>
 
-                <div className="bg-light" style={{ background: "#fff", padding: "20px 250px" }}>
-                    
+                    {/* Main Job Details Card */}
+                    <Card className="border-0 shadow-sm mb-4 job-detail-card">
+                        <Card.Body className="p-4">
+                            {/* Header with Title and Status */}
+                            <div className="d-flex justify-content-between align-items-start mb-4">
+                                <div className="flex-grow-1">
+                                    <h2 className="fw-bold theme-primary mb-3">{job.job_title}</h2>
+                                    <div className="d-flex flex-wrap gap-3 text-secondary">
+                                        <span className="d-flex align-items-center">
+                                            <FaMapMarkerAlt size={16} className="me-2 theme-primary" />
+                                            {job.job_location}
+                                        </span>
+                                        <span className="d-flex align-items-center">
+                                            <FaRegCalendarAlt size={16} className="me-2 theme-primary" />
+                                            Posted {getDaysAgo(job.job_posted_date)}
+                                        </span>
+                                        <span className="d-flex align-items-center">
+                                            <FaBriefcase size={16} className="me-2 theme-primary" />
+                                            {job.job_category}
+                                        </span>
+                                    </div>
+                                </div>
+                                <Badge bg="success" className="px-3 py-2 fs-6">
+                                    {job.job_status || 'Open'}
+                                </Badge>
+                            </div>
 
-                    {/* back arrow */}
-                    <div className="d-flex align-items-center mb-3">
-                        <FaArrowLeft onClick={handleBackWorkerJob} size={20} style={{ cursor: "pointer" }} />
-                        <span className="ms-2" style={{ fontSize: "14px" }}>View Job Details</span>
-                    </div>
+                            <hr className="my-4" />
 
-                    <hr />
+                            {/* Description Section */}
+                            <div className="mb-4">
+                                <h5 className="fw-bold mb-3 section-title">
+                                    <span className="title-accent"></span>
+                                    Job Description
+                                </h5>
+                                <p className="text-muted" style={{ textAlign: "justify", lineHeight: "1.8", fontSize: "1.05rem" }}>
+                                    {job.job_description}
+                                </p>
+                            </div>
 
-                    {/* Job Title */}
-                    <h3 className="fw-semibold mb-3">{job.job_title}</h3>
+                            <hr className="my-4" />
 
-                    {/* Location + Date */}
-                    <div className="d-flex mb-4">
-                        <div className="d-flex align-items-center me-4">
-                            <FaMapMarkerAlt size={16} className="me-2" />
-                            <span>{job.job_location}</span>
-                        </div>
-                        <div className="d-flex align-items-center">
-                            <FaRegCalendarAlt size={16} className="me-2" />
-                            <span>
-                                {new Date(job.job_posted_date).toLocaleDateString('en-GB', {
-                                    day: '2-digit',
-                                    month: 'short',
-                                    year: 'numeric'
-                                })}
-                            </span>
-                        </div>
-                    </div>
+                            {/* Skills Section */}
+                            <div className="mb-4">
+                                <h5 className="fw-bold mb-3 section-title">
+                                    <span className="title-accent"></span>
+                                    Required Skills
+                                </h5>
+                                <div className="d-flex flex-wrap gap-2">
+                                    {job.skills && job.skills.split(',').map((skill, idx) => (
+                                        <Badge
+                                            key={idx}
+                                            bg="light"
+                                            text="dark"
+                                            className="px-3 py-2 skill-badge"
+                                            style={{ fontSize: '0.95rem' }}
+                                        >
+                                            {skill.trim()}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            </div>
 
-                    <hr />
+                            <hr className="my-4" />
 
-                    {/* Description */}
-                    <h5 className="fw-semibold">Description</h5>
-                    <p style={{ textAlign: "justify", lineHeight: "1.7" }}>
-                        {job.job_description}
-                    </p>
+                            {/* Contact Details Section */}
+                            <div className="mb-4">
+                                <h5 className="fw-bold mb-3 section-title">
+                                    <span className="title-accent"></span>
+                                    Contact Information
+                                </h5>
+                                <Row className="g-4">
+                                    <Col md={4}>
+                                        <div className="contact-item">
+                                            <FaUser className="theme-primary mb-2" size={20} />
+                                            <div className="small text-muted">Customer Name</div>
+                                            <div className="fw-semibold">{job.customer_name}</div>
+                                        </div>
+                                    </Col>
+                                    <Col md={4}>
+                                        <div className="contact-item">
+                                            <FaPhone className="theme-primary mb-2" size={20} />
+                                            <div className="small text-muted">Phone Number</div>
+                                            <div className="fw-semibold">{job.customer_phone}</div>
+                                        </div>
+                                    </Col>
+                                    <Col md={4}>
+                                        <div className="contact-item">
+                                            <FaHome className="theme-primary mb-2" size={20} />
+                                            <div className="small text-muted">Address</div>
+                                            <div className="fw-semibold">{job.customer_address}</div>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </div>
 
-                    <hr />
+                            {/* Apply Button */}
+                            <div className="text-center mt-5">
+                                <Button
+                                    onClick={() => setShow(true)}
+                                    variant="info"
+                                    size="lg"
+                                    className="px-5 py-3 text-white apply-button"
+                                >
+                                    Apply for this Job
+                                </Button>
+                            </div>
+                        </Card.Body>
+                    </Card>
 
-                    {/* Skills */}
-                    <h5 className="fw-semibold">Skills</h5>
-                    <div className="d-flex gap-2 mb-4">
-                        <span className="px-3 py-1 border rounded-pill">{job.skills}</span>
-                    </div>
-
-                    <hr />
-
-                    {/* Contact Details */}
-                    <h5 className="fw-semibold">Contact Details</h5>
-                    <div className="row mt-3 mb-5">
-                        <div className="col-md-3">
-                            <strong>Name :</strong> {job.customer_name}
-                        </div>
-                        <div className="col-md-4">
-                            <strong>Contact No :</strong> {job.customer_phone}
-                        </div>
-                        <div className="col-md-5">
-                            <strong>Address :</strong> {job.customer_address}
-                        </div>
-                    </div>
-
-                    {/* Apply Button */}
-                    <div className="text-end">
-                        <Button
-                            onClick={() => setShow(true)}
-                            variant="outline-info"
-                            style={{
-                                padding: "8px 30px",
-                                borderRadius: "8px",
-                            }}
-                        >
-                            Apply
-                        </Button>
-                    </div>
-
-                    {/* POPUP MODAL */}
-                    <Modal show={show} onHide={() => setShow(false)} centered>
-                        <Modal.Header
-                            closeButton
-                            style={{ backgroundColor: "green", color: "white" }}
-                        >
-                            <Modal.Title>Confirmation</Modal.Title>
+                    {/* Application Modal */}
+                    <Modal show={show} onHide={() => setShow(false)} centered className="application-modal">
+                        <Modal.Header closeButton className="border-0 pb-0">
+                            <Modal.Title className="theme-primary fw-bold">Confirm Application</Modal.Title>
                         </Modal.Header>
 
-                        <Modal.Body className="text-center" style={{ height: "80px" }}>
-                            <h5>Are you sure want to apply this job?</h5>
+                        <Modal.Body className="text-center py-4">
+                            <div className="mb-3">
+                                <div className="confirmation-icon mb-3">
+                                    <FaBriefcase size={40} className="theme-primary" />
+                                </div>
+                                <h5 className="mb-2">Apply for {job.job_title}?</h5>
+                                <p className="text-muted">
+                                    Your application will be sent to the employer. Make sure you're ready!
+                                </p>
+                            </div>
                         </Modal.Body>
 
-                        <Modal.Footer className="d-flex justify-content-center">
-                            <Button variant="outline-secondary" style={{ width: "120px" }} onClick={() => setShow(false)}>
+                        <Modal.Footer className="border-0 d-flex justify-content-center gap-3 pb-4">
+                            <Button
+                                variant="outline-secondary"
+                                style={{ width: "140px" }}
+                                onClick={() => setShow(false)}
+                            >
                                 Cancel
                             </Button>
-                            <Button variant="outline-success" style={{ width: "120px" }} >Yes</Button>
+                            <Button
+                                variant="info"
+                                className="text-white"
+                                style={{ width: "140px" }}
+                            >
+                                Confirm Apply
+                            </Button>
                         </Modal.Footer>
                     </Modal>
 
-                    {/* Footer */}
-                    {/* <Footer/> */}
-                    
-                </div>
-
+                </Container>
             </div>
             <Footer />
         </div>
-
-
-
-
     )
 }

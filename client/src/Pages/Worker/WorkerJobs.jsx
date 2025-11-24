@@ -1,36 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Button, Form, InputGroup } from 'react-bootstrap';
-import { GeoAlt, CalendarDate } from 'react-bootstrap-icons';
+import { Container, Card, Button, Form, InputGroup, Badge, Row, Col } from 'react-bootstrap';
+import { GeoAlt, CalendarDate, Briefcase, Search } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
 import TopNavbar from '../../Components/TopNavbar';
 import Footer from '../../Components/Footer';
 import axiosInstance from '../../api/axios';
+import './WorkerJobs.css';
 
 export default function WorkerJobs() {
 
     const navigate = useNavigate();
     const [jobs, setJobs] = useState([]);
-
-    // for search functionality
     const [searchTerm, setSearchTerm] = useState("");
-
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         axiosInstance.get("/api/jobs")
             .then(res => {
                 console.log("Response data:", res.data);
-                // Handle new API response structure
                 const jobsData = res.data.jobs || res.data;
                 setJobs(jobsData);
+                setLoading(false);
             })
-            .catch(err => console.error("Error fetching jobs:", err));
+            .catch(err => {
+                console.error("Error fetching jobs:", err);
+                setLoading(false);
+            });
     }, []);
 
     // FILTER
     const filteredJobs = jobs.filter((job) =>
-        job.job_title.toLowerCase().includes(searchTerm.toLowerCase()) 
-
-        //|| job.job_description.toLowerCase().includes(searchTerm.toLowerCase())
+        job.job_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.job_description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.job_category.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     // SORT BY MOST RECENT
@@ -38,67 +40,153 @@ export default function WorkerJobs() {
         (a, b) => new Date(b.job_posted_date) - new Date(a.job_posted_date)
     );
 
-
+    // Calculate days ago
+    const getDaysAgo = (date) => {
+        const diff = new Date() - new Date(date);
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        if (days === 0) return 'Today';
+        if (days === 1) return 'Yesterday';
+        return `${days} days ago`;
+    };
 
     return (
         <div>
             <div className="min-vh-100 d-flex flex-column bg-light">
-                {/* Navbar */}
                 <TopNavbar />
 
-
-                {/* Search bar */}
+                {/* Jobs Section */}
                 <Container className="my-4">
-                    <InputGroup style={{ width: "350px" }}>
-                        <InputGroup.Text>
-                            <i className="bi bi-search"></i>
-                        </InputGroup.Text>
-                        <Form.Control 
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        type="text" 
-                        placeholder="Search Jobs" />
-                    </InputGroup>
-                    <hr className="mt-4 mb-4" />
-                    <Button 
-                    disabled 
-                    variant="outline-dark" 
-                    className="mb-3 no-hover">
 
-                        Most Recent
-                    </Button>
+                    {/* Search Bar */}
+                    <Row className="mb-3">
+                        <Col md={6}>
+                            <InputGroup className="shadow-sm search-input-group">
+                                <InputGroup.Text className="bg-white border-0">
+                                    <Search size={18} className="text-muted" />
+                                </InputGroup.Text>
+                                <Form.Control
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    type="text"
+                                    placeholder="Search by job title, category, or description..."
+                                    className="border-0"
+                                />
+                            </InputGroup>
+                        </Col>
+                    </Row>
 
-                    {/* Job Cards */}
-                    <div>
-                        {/* {jobs.map((job, index) => ( */}
-                        {sortedJobs.map((job, index) => (
-                            <Card key={index} className="mb-3 border-0 shadow-sm">
-                                <Card.Body className="d-flex justify-content-between align-items-center bg-light-subtle">
-                                    <div>
-                                        <Card.Title className="fw-semibold">{job.job_title}</Card.Title>
-                                        <Card.Text className="text-muted mb-2">{job.job_description}</Card.Text>
-                                        <div className="d-flex align-items-center text-secondary small">
-                                            <GeoAlt size={14} className="me-1" />
-                                            {job.job_location}
-                                            <CalendarDate size={14} className="ms-3 me-1" />
-                                            {/* {job.job_posted_date} */}
-                                            {new Date(job.job_posted_date).toLocaleDateString('en-GB', {
-                                                day: '2-digit',
-                                                month: 'short',
-                                                year: 'numeric'
-                                            })}
-                                        </div>
-                                    </div>
+                    <hr className="my-4" />
 
-                                    {/* <button onClick={handleViewJob} type="button" class="btn btn-outline-info btn-sm"> View </button>  */}
-                                    <button onClick={() => navigate(`/workerviewjob/${job.job_id}`, { state: job })} type="button" className="btn btn-light btn-sm"> View </button>
-
-
-                                </Card.Body >
-                            </Card>
-                        ))}
+                    {/* Filter Badge */}
+                    <div className="d-flex align-items-center gap-3 mb-3">
+                        <Button
+                            disabled
+                            variant="outline-dark"
+                            className="no-hover">
+                            <CalendarDate className="me-2" />
+                            Most Recent
+                        </Button>
+                        {searchTerm && (
+                            <Badge bg="info" className="px-3 py-2">
+                                Searching: "{searchTerm}"
+                            </Badge>
+                        )}
                     </div>
-                </Container>
 
+                        {/* Loading State */}
+                        {loading ? (
+                            <div className="text-center py-5">
+                                <div className="spinner-border text-info" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                </div>
+                                <p className="mt-3 text-muted">Loading jobs...</p>
+                            </div>
+                        ) : sortedJobs.length === 0 ? (
+                            <Card className="border-0 shadow-sm text-center py-5">
+                                <Card.Body>
+                                    <Briefcase size={60} className="text-muted mb-3" />
+                                    <h4>No jobs found</h4>
+                                    <p className="text-muted">
+                                        {searchTerm ? "Try adjusting your search terms" : "Check back later for new opportunities"}
+                                    </p>
+                                </Card.Body>
+                            </Card>
+                        ) : (
+                            /* Job Cards */
+                            <div className="job-cards-container">
+                                {sortedJobs.map((job, index) => (
+                                    <Card
+                                        key={index}
+                                        className="job-card mb-4 border-0 shadow-sm hover-lift"
+                                        style={{
+                                            animation: `fadeInUp 0.5s ease ${index * 0.1}s both`
+                                        }}
+                                    >
+                                        <Card.Body className="p-4">
+                                            <div className="d-flex justify-content-between align-items-start mb-3">
+                                                <div className="flex-grow-1">
+                                                    <div className="d-flex align-items-center gap-2 mb-2">
+                                                        <h5 className="mb-0 fw-bold theme-primary">{job.job_title}</h5>
+                                                        <Badge bg="success" className="rounded-pill">
+                                                            {job.job_status || 'Open'}
+                                                        </Badge>
+                                                    </div>
+                                                    <p className="text-muted mb-3" style={{ lineHeight: '1.6' }}>
+                                                        {job.job_description}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Job Category Badge */}
+                                            <div className="mb-3">
+                                                <Badge bg="light" text="dark" className="px-3 py-2 me-2">
+                                                    <Briefcase size={14} className="me-1" />
+                                                    {job.job_category}
+                                                </Badge>
+                                            </div>
+
+                                            {/* Skills */}
+                                            {job.skills && (
+                                                <div className="mb-3 d-flex flex-wrap gap-2">
+                                                    {job.skills.split(',').slice(0, 4).map((skill, idx) => (
+                                                        <Badge
+                                                            key={idx}
+                                                            bg="secondary"
+                                                            className="px-2 py-1 fw-normal"
+                                                            style={{ fontSize: '0.85rem' }}
+                                                        >
+                                                            {skill.trim()}
+                                                        </Badge>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            {/* Footer Info */}
+                                            <div className="d-flex justify-content-between align-items-center pt-3 border-top">
+                                                <div className="d-flex align-items-center gap-3 text-secondary small">
+                                                    <span className="d-flex align-items-center">
+                                                        <GeoAlt size={16} className="me-1" />
+                                                        {job.job_location}
+                                                    </span>
+                                                    <span className="d-flex align-items-center">
+                                                        <CalendarDate size={16} className="me-1" />
+                                                        {getDaysAgo(job.job_posted_date)}
+                                                    </span>
+                                                </div>
+                                                <Button
+                                                    variant="info"
+                                                    size="sm"
+                                                    className="px-4 rounded-pill text-white"
+                                                    onClick={() => navigate(`/workerviewjob/${job.job_id}`, { state: job })}
+                                                >
+                                                    View Details →
+                                                </Button>
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                ))}
+                            </div>
+                        )}
+                </Container>
             </div>
             <Footer />
         </div>
