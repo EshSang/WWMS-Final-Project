@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import axiosInstance from "../api/axios";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
-import { FaMapMarkerAlt } from "react-icons/fa";
-import { FaRegCalendarAlt } from "react-icons/fa";
-import TopNavbar from "../Components/TopNavbar";
-import Footer from "../Components/Footer";
+import { FaMapMarkerAlt, FaRegCalendarAlt } from "react-icons/fa";
+import axiosInstance from "../../api/axios";
+import TopNavbar from "../../Components/TopNavbar";
+import Footer from "../../Components/Footer";
 
 const CustomerJobs = () => {
   const [jobs, setJobs] = useState([]);

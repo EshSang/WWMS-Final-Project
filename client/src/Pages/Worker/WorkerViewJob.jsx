@@ -1,11 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaArrowLeft, FaMapMarkerAlt, FaRegCalendarAlt } from "react-icons/fa";
-import { useNavigate } from 'react-router-dom';
-import Footer from "../Components/Footer";
-import TopNavbar from "../Components/TopNavbar";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button, Modal } from "react-bootstrap";
-import { useState } from "react";
+import TopNavbar from "../../Components/TopNavbar";
+import Footer from "../../Components/Footer";
 
 
 export default function WorkerViewJob() {

@@ -1,14 +1,10 @@
-import React from 'react';
-import { Container, Row, Col, Card, Button, Form, InputGroup, Navbar } from 'react-bootstrap';
-import { GeoAlt, CalendarDate, PersonCircle, FileEarmarkPlus, ArrowRight } from 'react-bootstrap-icons';
-import { useState, useEffect } from "react";
-import { Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { ArrowBigRightDash } from 'lucide-react';
-import TopNavbar from '../Components/TopNavbar';
-import Footer from '../Components/Footer';
-import axiosInstance from '../api/axios';
+import React, { useState, useEffect } from 'react';
+import { Container, Card, Button, Form, InputGroup } from 'react-bootstrap';
+import { GeoAlt, CalendarDate } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
+import TopNavbar from '../../Components/TopNavbar';
+import Footer from '../../Components/Footer';
+import axiosInstance from '../../api/axios';
 
 export default function WorkerJobs() {
 
@@ -29,13 +25,6 @@ export default function WorkerJobs() {
             })
             .catch(err => console.error("Error fetching jobs:", err));
     }, []);
-
-
-    const handleMyServiceClick = () => {
-        navigate("/workermyservice");
-    };
-
-
 
     // FILTER
     const filteredJobs = jobs.filter((job) =>

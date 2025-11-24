@@ -1,26 +1,32 @@
 import './App.css'
-import SignUp from './Pages/SignUp'
-import SignIn from './Pages/SignIn'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './Components/ProtectedRoute';
-import Home from './Pages/Home';
-import WorkerJobs from './Pages/WorkerJobs';
-import WorkerMyService from './Pages/WorkerMyService';
-import WorkerOrders from './Pages/WorkerOrders';
-import WorkerEarning from './Pages/WorkerEarning';
-import WorkerReviews from './Pages/WorkerReviews';
-import WorkerAnalytics from './Pages/WorkerAnalytics';
 
-import CustomerJobs from './Pages/CustomerJobs';
-import CustomerJobPost from './Pages/CustomerJobPost';
-import CustomerOrders from './Pages/CustomerOrders';
-import CustomerPostedJobs from './Pages/CustomerPostedJobs';
-import CustomerReviews from './Pages/CustomerReviews';
-import CustomerAnalytics from './Pages/CustomerAnalytics';
+// Auth Pages
+import SignUp from './Pages/Auth/SignUp'
+import SignIn from './Pages/Auth/SignIn'
 
-import UserProfile from './Pages/UserProfile';
-import WorkerViewJob from './Pages/WorkerViewJob';
+// Common Pages
+import Home from './Pages/Common/Home';
+import UserProfile from './Pages/Common/UserProfile';
+
+// Worker Pages
+import WorkerJobs from './Pages/Worker/WorkerJobs';
+import WorkerMyService from './Pages/Worker/WorkerMyService';
+import WorkerOrders from './Pages/Worker/WorkerOrders';
+import WorkerEarning from './Pages/Worker/WorkerEarning';
+import WorkerReviews from './Pages/Worker/WorkerReviews';
+import WorkerAnalytics from './Pages/Worker/WorkerAnalytics';
+import WorkerViewJob from './Pages/Worker/WorkerViewJob';
+
+// Customer Pages
+import CustomerJobs from './Pages/Customer/CustomerJobs';
+import CustomerJobPost from './Pages/Customer/CustomerJobPost';
+import CustomerOrders from './Pages/Customer/CustomerOrders';
+import CustomerPostedJobs from './Pages/Customer/CustomerPostedJobs';
+import CustomerReviews from './Pages/Customer/CustomerReviews';
+import CustomerAnalytics from './Pages/Customer/CustomerAnalytics';
 
 
 

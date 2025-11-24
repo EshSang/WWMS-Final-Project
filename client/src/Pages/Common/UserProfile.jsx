@@ -3,8 +3,8 @@ import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaUser, FaEdit, FaSignOutAlt, FaCamera } from "react-icons/fa";
-import { useAuth } from "../context/AuthContext";
-import axiosInstance from "../api/axios";
+import { useAuth } from "../../context/AuthContext";
+import axiosInstance from "../../api/axios";
 
 export default function Profile() {
   const [editing, setEditing] = useState(false);

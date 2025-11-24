@@ -1,5 +1,4 @@
-import React from 'react'
-import { ArrowLeft } from 'lucide-react';
+import React from 'react';
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
@@ -61,30 +60,33 @@ export default function Home() {
 
             <div className="d-flex justify-content-center gap-4">
               {/* Worker Card */}
-              <div className="card p-4 shadow-sm border-0 hover-card" style={{ width: "180px", cursor: "pointer" }}>
+              <div
+                className="card p-4 shadow-sm border-0 hover-card"
+                style={{ width: "180px", cursor: "pointer" }}
+                onClick={() => handleWorkerJobClick("Worker")}
+              >
                 <img
                   src="/public/Worker.png"
                   alt="Worker"
                   width="60"
                   height="60"
                   className="mx-auto mb-3"
-                  onClick={() => handleWorkerJobClick("Worker")} 
-                  //onClick={() => handleSelect("Worker")}
-                
                 />
                 <h6>Worker</h6>
               </div>
 
               {/* Customer Card */}
-              <div className="card p-4 shadow-sm border-0 hover-card" style={{ width: "180px", cursor: "pointer" }}>
+              <div
+                className="card p-4 shadow-sm border-0 hover-card"
+                style={{ width: "180px", cursor: "pointer" }}
+                onClick={() => handleCustomerJobClick("Customer")}
+              >
                 <img
                   src="/public/Customer.png"
                   alt="Customer"
                   width="60"
                   height="60"
                   className="mx-auto mb-3"
-                  onClick={() => handleCustomerJobClick("Customer")}
-                  //onClick={() => handleSelect("Customer")}
                 />
                 <h6>Customer</h6>
               </div>

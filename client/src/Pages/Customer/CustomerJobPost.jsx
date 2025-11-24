@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import TopNavbar from '../Components/TopNavbar';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
-import Footer from "../Components/Footer";
-import axiosInstance from '../api/axios';
+import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+import TopNavbar from '../../Components/TopNavbar';
+import Footer from "../../Components/Footer";
+import axiosInstance from '../../api/axios';
 
 export default function CustomerJobPost() {
 
@@ -22,10 +22,8 @@ export default function CustomerJobPost() {
     job_posted_date: "",
     customer_name: "",
     customer_phone: "",
-    customer_address: "", 
-    job_status: "", 
-    submitted_user_email: "", 
-    job_categoty: ""
+    customer_address: "",
+    job_category: ""
   });
 
 
@@ -75,10 +73,8 @@ export default function CustomerJobPost() {
           job_posted_date: "",
           customer_name: "",
           customer_phone: "",
-          customer_address: "", 
-          job_status: "open", 
-          submitted_user_email: "eshana21@gmail.com", 
-          job_categoty: ""
+          customer_address: "",
+          job_category: ""
         });
 
         setTimeout(() => navigate("/"), 2000);
@@ -185,8 +181,8 @@ const [categories, setCategories] = useState([]);
             <Form.Group className="mb-3">
               <Form.Label>Category</Form.Label>
               <Form.Select
-                name="category"
-                value={formData.categories}
+                name="job_category"
+                value={formData.job_category}
                 onChange={(e) => {
                   setformData({ ...formData, job_category: e.target.value });
 
