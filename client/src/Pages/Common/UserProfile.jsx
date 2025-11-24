@@ -27,13 +27,13 @@ export default function Profile() {
 
   const fetchUserProfile = async () => {
     try {
-      const res = await axiosInstance.get('/api/user/profile');
-      const userData = res.data;
+      const res = await axiosInstance.get('/api/auth/profile');
+      const userData = res.data.user;
       setProfile({
         name: `${userData.fname} ${userData.lname}`,
         email: userData.email,
         phone: userData.phonenumber || "",
-        address: "",
+        address: userData.address != "" ? userData.address : "-",
         role: sessionStorage.getItem("selectedType") || "",
         avatar: "https://cdn-icons-png.flaticon.com/512/4140/4140037.png",
       });
