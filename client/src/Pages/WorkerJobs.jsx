@@ -20,11 +20,12 @@ export default function WorkerJobs() {
 
 
     useEffect(() => {
-        axiosInstance.get("/available_jobs")
+        axiosInstance.get("/api/jobs")
             .then(res => {
                 console.log("Response data:", res.data);
-                setJobs(res.data)
-
+                // Handle new API response structure
+                const jobsData = res.data.jobs || res.data;
+                setJobs(jobsData);
             })
             .catch(err => console.error("Error fetching jobs:", err));
     }, []);

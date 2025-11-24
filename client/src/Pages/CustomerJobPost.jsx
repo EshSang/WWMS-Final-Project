@@ -56,7 +56,7 @@ export default function CustomerJobPost() {
       return;
     }
 
-    axiosInstance.post("/customerjobpost", formData)
+    axiosInstance.post("/api/jobs", formData)
       .then(res => {
         if (res.data === "This record already exists" || res.data?.message === "This record already exists") {
           setErrorMessage("⚠️ This record is already there. Please use a different one.");
@@ -105,12 +105,12 @@ const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
-    axiosInstance.get("/job_category")
+    axiosInstance.get("/api/categories")
       .then((res) => {
         if (!isMounted) return;
-        // Handle common API response shapes
-        const payload = Array.isArray(res.data) ? res.data : (Array.isArray(res.data?.data) ? res.data.data : []);
-        setCategories(payload || []);
+        // Handle new API response structure
+        const payload = res.data.categories || res.data;
+        setCategories(Array.isArray(payload) ? payload : []);
       })
       .catch((err) => {
         if (!isMounted) return;
@@ -208,9 +208,9 @@ const [categories, setCategories] = useState([]);
                 <option value="">-- Select Category --</option>
 
                 {categories.map((cat) => {
-                  const key = cat.id ?? cat._id ?? cat.name ?? JSON.stringify(cat);
-                  const value = cat.name ?? cat.id ?? cat._id ?? "";
-                  const label = cat.name ?? cat.categories ?? value;
+                  const key = cat.category_id ?? cat.id ?? cat._id ?? JSON.stringify(cat);
+                  const value = cat.category ?? cat.name ?? cat.id ?? "";
+                  const label = cat.category ?? cat.name ?? value;
                   return (
                     <option key={key} value={value}>
                       {label}

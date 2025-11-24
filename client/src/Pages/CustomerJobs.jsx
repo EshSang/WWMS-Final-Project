@@ -13,8 +13,12 @@ const CustomerJobs = () => {
   // Fetch jobs from backend
   useEffect(() => {
     axiosInstance
-      .get("/available_jobs")
-      .then((res) => setJobs(res.data))
+      .get("/api/jobs")
+      .then((res) => {
+        // Handle new API response structure
+        const jobsData = res.data.jobs || res.data;
+        setJobs(jobsData);
+      })
       .catch((err) => console.error("Error fetching jobs:", err));
   }, []);
 

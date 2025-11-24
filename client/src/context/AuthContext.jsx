@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext(null);
@@ -34,13 +34,22 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = (token) => {
-    localStorage.setItem('token', token);
-    const decoded = jwtDecode(token);
-    setUser(decoded);
-    setIsAuthenticated(true);
+    console.log('🔐 AuthContext login called with token:', token?.substring(0, 20) + '...');
+    try {
+      localStorage.setItem('token', token);
+      const decoded = jwtDecode(token);
+      console.log('🔐 Token decoded successfully:', decoded);
+      setUser(decoded);
+      setIsAuthenticated(true);
+      console.log('🔐 User authenticated:', decoded.email);
+    } catch (error) {
+      console.error('🔐 Error during login:', error);
+      throw error;
+    }
   };
 
   const logout = () => {
+    console.log('🔐 Logging out user');
     localStorage.removeItem('token');
     sessionStorage.removeItem('selectedType');
     setUser(null);
@@ -59,6 +68,7 @@ export const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
+// Export useAuth separately to fix React Fast Refresh warning
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
