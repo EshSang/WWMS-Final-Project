@@ -133,11 +133,20 @@ function SignupForm() {
                   </Form.Group>
 
                   {/* Submit */}
-                  <div className="text-center">
-                    <Button type="submit" className="rounded-pill"
-                      style={{ width: '300px', backgroundColor: '#0FC5BB', borderColor: '#0FC5BB' }}>
+                  <div className="d-flex justify-content-center mt-4">
+                    <button
+                      type="submit"
+                      className="btn rounded-pill"
+                      style={{
+                        width: "300px",
+                        backgroundColor: "#0FC5BB",
+                        borderColor: "#0FC5BB",
+                        color: "#fff",
+                        fontWeight: 500,
+                      }}
+                    >
                       Sign Up
-                    </Button>
+                    </button>
                   </div>
 
                    {/* Divider */}

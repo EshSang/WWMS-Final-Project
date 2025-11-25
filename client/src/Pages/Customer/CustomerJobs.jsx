@@ -47,6 +47,19 @@ const CustomerJobs = () => {
     return `${days} days ago`;
   };
 
+
+// Calculate minutes ago
+// const getMinutesAgo = (date) => {
+//   const diff = new Date() - new Date(date);
+//   const minutes = Math.floor(diff / (1000 * 60));
+
+//   if (minutes === 0) return 'Just now';
+//   if (minutes === 1) return '1 minute ago';
+//   return `${minutes} minutes ago`;
+// };
+
+
+
   return (
     <div>
       <div className="min-vh-100 d-flex flex-column bg-light">
@@ -165,6 +178,7 @@ const CustomerJobs = () => {
                         <span className="d-flex align-items-center">
                           <FaRegCalendarAlt size={16} className="me-1" />
                           {getDaysAgo(job.job_posted_date)}
+                          {/* {getMinutesAgo(job.job_posted_date)} */}
                         </span>
                       </div>
                       <Button

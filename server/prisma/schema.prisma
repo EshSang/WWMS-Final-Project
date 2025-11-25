@@ -8,14 +8,16 @@ datasource db {
 }
 
 model UserDetails {
-  userid      Int    @id @default(autoincrement())
-  fname       String @db.VarChar(255)
-  lname       String @db.VarChar(255)
+  userid      Int     @id @default(autoincrement())
+  fname       String  @db.VarChar(255)
+  lname       String  @db.VarChar(255)
   phonenumber Int
-  email       String @unique @db.VarChar(50)
-  password    String @db.VarChar(255)
-  address     String @db.VarChar(50)
-  usertype    String @db.VarChar(10)
+  email       String  @db.VarChar(50)
+  password    String? @db.VarChar(255)
+  address     String  @db.VarChar(50)
+  skills      String  @db.VarChar(50)
+  about       String  @db.VarChar(255)
+  usertype    String  @db.VarChar(10)
 
   @@map("user_details")
 }
@@ -38,8 +40,17 @@ model AvailableJobs {
   customer_name        String   @db.VarChar(255)
   customer_address     String   @db.VarChar(255)
   customer_phone       Int
+  hourly               Int
   job_status           String   @db.VarChar(20)
   submitted_user_email String   @db.VarChar(20)
 
   @@map("available_jobs")
+}
+
+
+model Orders {
+  order_id               Int      @id @default(autoincrement())
+  submitted_order_id     Int
+  applied_date           DateTime @db.Date
+  order_status           String   @db.VarChar(50)
 }

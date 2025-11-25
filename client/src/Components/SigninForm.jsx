@@ -55,8 +55,12 @@ function SigninForm() {
       const res = await axiosInstance.post("/signin", { email, password });
       console.log("✅ Login response:", res.data);
 
+      // Save logged-in user email in local storage
+    localStorage.setItem("logginUserEmail", res.data.user.email);
+
       toast.success("✅ Login Success!");
       login(res.data.token);
+    
       navigate("/home");
       //setTimeout(() => navigate("/home"), 1500);
     } catch (err) {

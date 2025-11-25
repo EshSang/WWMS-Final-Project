@@ -41,13 +41,16 @@ class JobController {
         job_location,
         customer_name,
         customer_address,
-        customer_phone
+        customer_phone, 
+        hourly,
+        job_status,
+        submitted_user_email
       } = req.body;
 
       // Validation
-      if (!job_title || !job_description || !job_category || !skills || !job_location) {
+      if (!job_title || !job_description || !job_category || !skills || !job_location || !hourly || !job_status || !submitted_user_email) {
         return res.status(400).json({
-          message: 'Required fields: job_title, job_description, job_category, skills, job_location'
+          message: 'Required fields: job_title, job_description, job_category, skills, job_location, hourly, job_status, submitted_user_email'
         });
       }
 
@@ -81,7 +84,8 @@ class JobController {
             customer_name,
             customer_address,
             customer_phone: phoneNumber,
-            job_status: 'open',
+            hourly,
+            job_status: 'Open',
             submitted_user_email: req.user.email
           }
         });

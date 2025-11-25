@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Form, Badge, ListGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaUser, FaEdit, FaSignOutAlt, FaCamera } from "react-icons/fa";
@@ -14,6 +14,7 @@ export default function Profile() {
     email: "",
     phone: "",
     address: "",
+    skill: "",
     role: "",
     avatar: "https://cdn-icons-png.flaticon.com/512/4140/4140037.png",
   });
@@ -34,6 +35,7 @@ export default function Profile() {
         email: userData.email,
         phone: userData.phonenumber || "",
         address: userData.address != "" ? userData.address : "-",
+        skill: userData.skills != "" ? userData.skills : "-",
         role: sessionStorage.getItem("selectedType") || "",
         avatar: "https://cdn-icons-png.flaticon.com/512/4140/4140037.png",
       });
@@ -86,7 +88,7 @@ export default function Profile() {
         padding: "30px 0",
       }}
     >
-      <Container>
+      <Container className="pb-5">
         <Row className="justify-content-center">
           <Col md={8}>
             <Card
@@ -243,6 +245,55 @@ export default function Profile() {
           </Col>
         </Row>
       </Container>
+
+
+      {/*     Skills Section            */}
+      <div className="px-5">
+        <Card className="shadow-sm border-0 p-4 mb-4 ">
+          <h4 className="fw-bold mb-3">Skills</h4>
+          <div>
+            <Badge bg="primary" className="me-2 mb-2">{profile.skill}</Badge>
+            {/* <Badge bg="success" className="me-2 mb-2">Node.js</Badge>
+            <Badge bg="warning" className="me-2 mb-2">JavaScript</Badge>
+            <Badge bg="info" className="me-2 mb-2">UI/UX Design</Badge>
+            <Badge bg="dark" className="me-2 mb-2">MySQL</Badge> */}
+          </div>
+        </Card>
+      </div>
+
+
+      {/*     My Work Description       */}
+      <div className="px-5">
+        <Card className="shadow-sm border-0 p-4 mb-4">
+          <h4 className="fw-bold mb-3">About My Works</h4>
+          <p className="text-muted">
+            I am a full-stack developer with experience in building mobile-responsive
+            systems, Power Apps solutions, freelance websites, and dashboard applications.
+          </p>
+        </Card>
+      </div>       
+
+      {/*     My Reviews Section        */}
+      <div className="px-5">
+        <Card className="shadow-sm border-0 p-4">
+          <h4 className="fw-bold mb-3">My Reviews</h4>
+
+          <ListGroup variant="flush">
+            <ListGroup.Item className="border-0 p-3 shadow-sm mb-3 rounded">
+              <strong>John Doe</strong>
+              <div className="text-warning">⭐⭐⭐⭐☆</div>
+              <p className="text-muted">Great work! Delivered on time and with high quality.</p>
+            </ListGroup.Item>
+
+            <ListGroup.Item className="border-0 p-3 shadow-sm mb-3 rounded">
+              <strong>Amara Silva</strong>
+              <div className="text-warning">⭐⭐⭐⭐⭐</div>
+              <p className="text-muted">Amazing UI design and clean code. Highly recommended!</p>
+            </ListGroup.Item>
+          </ListGroup>
+        </Card>
+      </div>  
+
     </div>
   );
 }

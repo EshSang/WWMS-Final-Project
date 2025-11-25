@@ -42,7 +42,7 @@ export default function TopNavbar() {
 
     // Worker navigation links
     const workerLinks = [
-        { path: "/workerjob", label: "Jobs" },
+        { path: "/workerjob", label: "Find" },
         // { path: "/workermyservice", label: "My Services" },
         { path: "/workerorders", label: "Orders" },
         { path: "/workerearning", label: "Earning" },
@@ -52,7 +52,7 @@ export default function TopNavbar() {
 
     // Customer navigation links
     const customerLinks = [
-        { path: "/customerjobs", label: "Jobs" },
+        { path: "/customerjobs", label: "Hire" },
         { path: "/customerjobpost", label: "Job Post" },
         { path: "/customerorders", label: "Orders" },
         { path: "/customerpostedjobs", label: "Posted Jobs" },
