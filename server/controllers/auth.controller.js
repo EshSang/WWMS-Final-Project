@@ -36,7 +36,7 @@ class AuthController {
       // Generate JWT token
       const token = jwt.sign(
         {
-          userid: user.userid,
+          id: user.id,
           email: user.email,
           usertype: user.usertype
         },
@@ -44,7 +44,7 @@ class AuthController {
         { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }
       );
 
-      console.log(`[${new Date().toISOString()}] Login successful for user: ${email} (ID: ${user.userid})`);
+      console.log(`[${new Date().toISOString()}] Login successful for user: ${email} (ID: ${user.id})`);
 
       // Return user data without password
       const { password: _, ...userWithoutPassword } = user;
@@ -93,14 +93,14 @@ class AuthController {
       const newUser = await authService.createUser({
         fname,
         lname,
-        phonenumber: parseInt(phonenumber),
+        phonenumber: phonenumber || null,
         email,
         password: hashedPassword,
-        address: address || '',
-        usertype: usertype || 'worker'
+        address: address || null,
+        usertype: usertype || 'USER'
       });
 
-      console.log(`[${new Date().toISOString()}] Signup successful for user: ${email} (ID: ${newUser.userid})`);
+      console.log(`[${new Date().toISOString()}] Signup successful for user: ${email} (ID: ${newUser.id})`);
 
       // Return user data without password
       const { password: _, ...userWithoutPassword } = newUser;
@@ -124,7 +124,7 @@ class AuthController {
    */
   async getProfile(req, res) {
     try {
-      const userId = req.user.userid;
+      const userId = req.user.id;
 
       console.log(`[${new Date().toISOString()}] Fetching profile for user ID: ${userId}`);
 
@@ -144,6 +144,42 @@ class AuthController {
 
     } catch (error) {
       console.error(`[${new Date().toISOString()}] Get profile error:`, error);
+      res.status(500).json({
+        message: "Internal server error",
+        error: error.message
+      });
+    }
+  }
+
+  /**
+   * Update user profile
+   */
+  async updateProfile(req, res) {
+    try {
+      const userId = req.user.id;
+      const { phonenumber, address, skills, about } = req.body;
+
+      console.log(`[${new Date().toISOString()}] Updating profile for user ID: ${userId}`);
+
+      const updatedUser = await authService.updateUser(userId, {
+        phonenumber,
+        address,
+        skills,
+        about
+      });
+
+      // Return user data without password
+      const { password: _, ...userWithoutPassword } = updatedUser;
+
+      console.log(`[${new Date().toISOString()}] Profile updated successfully for user ID: ${userId}`);
+
+      res.json({
+        message: "Profile updated successfully",
+        user: userWithoutPassword
+      });
+
+    } catch (error) {
+      console.error(`[${new Date().toISOString()}] Update profile error:`, error);
       res.status(500).json({
         message: "Internal server error",
         error: error.message

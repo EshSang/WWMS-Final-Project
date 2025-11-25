@@ -7,7 +7,7 @@ class JobController {
    */
   async getAllJobs(req, res) {
     try {
-      console.log(`[${new Date().toISOString()}] Fetching all jobs - User: ${req.user.email} (ID: ${req.user.userid})`);
+      console.log(`[${new Date().toISOString()}] Fetching all jobs - User: ${req.user.email} (ID: ${req.user.id})`);
 
       const jobs = await jobService.getAllJobs();
 
@@ -34,64 +34,53 @@ class JobController {
     // Start a transaction for data consistency
     try {
       const {
-        job_title,
-        job_description,
-        job_category,
+        title,
+        description,
+        categoryId,
         skills,
-        job_location,
-        customer_name,
-        customer_address,
-        customer_phone, 
-        hourly,
-        job_status,
-        submitted_user_email
+        location,
+        hourlyRate
       } = req.body;
 
       // Validation
-      if (!job_title || !job_description || !job_category || !skills || !job_location || !hourly || !job_status || !submitted_user_email) {
+      if (!title || !description || !categoryId || !skills || !location || !hourlyRate) {
         return res.status(400).json({
-          message: 'Required fields: job_title, job_description, job_category, skills, job_location, hourly, job_status, submitted_user_email'
+          message: 'Required fields: title, description, categoryId, skills, location, hourlyRate'
         });
       }
 
-      if (!customer_name || !customer_address || !customer_phone) {
-        return res.status(400).json({
-          message: 'Required fields: customer_name, customer_address, customer_phone'
-        });
-      }
-
-      // Validate phone number
-      const phoneNumber = parseInt(customer_phone);
-      if (isNaN(phoneNumber)) {
-        return res.status(400).json({
-          message: 'Invalid phone number format'
-        });
-      }
-
-      console.log(`[${new Date().toISOString()}] Creating job - User: ${req.user.email} (ID: ${req.user.userid})`);
-      console.log(`[${new Date().toISOString()}] Job details: ${job_title} in ${job_location}`);
+      console.log(`[${new Date().toISOString()}] Creating job - User: ${req.user.email} (ID: ${req.user.id})`);
+      console.log(`[${new Date().toISOString()}] Job details: ${title} in ${location}`);
 
       // Use Prisma transaction for atomic operation
       const newJob = await prisma.$transaction(async (tx) => {
-        return await tx.availableJobs.create({
+        return await tx.job.create({
           data: {
-            job_title,
-            job_description,
-            job_category,
+            title,
+            description,
+            categoryId: parseInt(categoryId),
             skills,
-            job_location,
-            job_posted_date: new Date(),
-            customer_name,
-            customer_address,
-            customer_phone: phoneNumber,
-            hourly,
-            job_status: 'Open',
-            submitted_user_email: req.user.email
+            location,
+            postedDate: new Date(),
+            hourlyRate: parseInt(hourlyRate),
+            status: 'Open',
+            createdUserId: req.user.id
+          },
+          include: {
+            category: true,
+            createdUser: {
+              select: {
+                id: true,
+                email: true,
+                fname: true,
+                lname: true
+              }
+            }
           }
         });
       });
 
-      console.log(`[${new Date().toISOString()}] Job created successfully - Job ID: ${newJob.job_id}`);
+      console.log(`[${new Date().toISOString()}] Job created successfully - Job ID: ${newJob.id}`);
 
       res.status(201).json({
         message: "Job posted successfully",
@@ -112,9 +101,9 @@ class JobController {
    */
   async getMyJobs(req, res) {
     try {
-      console.log(`[${new Date().toISOString()}] Fetching jobs for user: ${req.user.email}`);
+      console.log(`[${new Date().toISOString()}] Fetching jobs for user: ${req.user.email} (ID: ${req.user.id})`);
 
-      const jobs = await jobService.getJobsByUserEmail(req.user.email);
+      const jobs = await jobService.getJobsByUserId(req.user.id);
 
       console.log(`[${new Date().toISOString()}] Found ${jobs.length} jobs for user ${req.user.email}`);
 
@@ -157,8 +146,8 @@ class JobController {
       // Use transaction for atomic update
       const updatedJob = await prisma.$transaction(async (tx) => {
         // Check if job exists
-        const job = await tx.availableJobs.findUnique({
-          where: { job_id: parseInt(jobId) }
+        const job = await tx.job.findUnique({
+          where: { id: parseInt(jobId) }
         });
 
         if (!job) {
@@ -166,9 +155,9 @@ class JobController {
         }
 
         // Update job status
-        return await tx.availableJobs.update({
-          where: { job_id: parseInt(jobId) },
-          data: { job_status: status }
+        return await tx.job.update({
+          where: { id: parseInt(jobId) },
+          data: { status: status }
         });
       });
 
@@ -205,21 +194,21 @@ class JobController {
       // Use transaction for atomic delete
       await prisma.$transaction(async (tx) => {
         // Check if job exists and belongs to user
-        const job = await tx.availableJobs.findUnique({
-          where: { job_id: parseInt(jobId) }
+        const job = await tx.job.findUnique({
+          where: { id: parseInt(jobId) }
         });
 
         if (!job) {
           throw new Error('Job not found');
         }
 
-        if (job.submitted_user_email !== req.user.email) {
+        if (job.createdUserId !== req.user.id) {
           throw new Error('Unauthorized to delete this job');
         }
 
         // Delete the job
-        await tx.availableJobs.delete({
-          where: { job_id: parseInt(jobId) }
+        await tx.job.delete({
+          where: { id: parseInt(jobId) }
         });
       });
 

@@ -15,12 +15,13 @@ export default function Profile() {
     phone: "",
     address: "",
     skill: "",
+    about: "",
     role: "",
     avatar: "https://cdn-icons-png.flaticon.com/512/4140/4140037.png",
   });
 
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
 
   useEffect(() => {
     fetchUserProfile();
@@ -34,8 +35,9 @@ export default function Profile() {
         name: `${userData.fname} ${userData.lname}`,
         email: userData.email,
         phone: userData.phonenumber || "",
-        address: userData.address != "" ? userData.address : "-",
-        skill: userData.skills != "" ? userData.skills : "-",
+        address: userData.address || "",
+        skill: userData.skills || "",
+        about: userData.about || "",
         role: sessionStorage.getItem("selectedType") || "",
         avatar: "https://cdn-icons-png.flaticon.com/512/4140/4140037.png",
       });
@@ -59,9 +61,21 @@ export default function Profile() {
     }
   };
 
-  const handleSave = () => {
-    setEditing(false);
-    toast.success("✅ Profile Updated Successfully");
+  const handleSave = async () => {
+    try {
+      await axiosInstance.put('/api/auth/profile', {
+        phonenumber: profile.phone,
+        address: profile.address,
+        skills: profile.skill,
+        about: profile.about
+      });
+      setEditing(false);
+      toast.success("✅ Profile Updated Successfully");
+      fetchUserProfile(); // Refresh profile data
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile");
+    }
   };
 
   const handleLogOutClick = () => {
@@ -229,6 +243,33 @@ export default function Profile() {
                         />
                       </Form.Group>
                     </Col>
+
+                    <Col md={12}>
+                      <Form.Group>
+                        <Form.Label>Skills (comma separated)</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="skill"
+                          value={profile.skill}
+                          onChange={handleInputChange}
+                          placeholder="e.g., JavaScript, React, Node.js"
+                        />
+                      </Form.Group>
+                    </Col>
+
+                    <Col md={12}>
+                      <Form.Group>
+                        <Form.Label>About My Work</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={4}
+                          name="about"
+                          value={profile.about}
+                          onChange={handleInputChange}
+                          placeholder="Tell us about your work experience and expertise..."
+                        />
+                      </Form.Group>
+                    </Col>
                   </Row>
 
                   <div className="mt-4 text-end">
@@ -252,11 +293,15 @@ export default function Profile() {
         <Card className="shadow-sm border-0 p-4 mb-4 ">
           <h4 className="fw-bold mb-3">Skills</h4>
           <div>
-            <Badge bg="primary" className="me-2 mb-2">{profile.skill}</Badge>
-            {/* <Badge bg="success" className="me-2 mb-2">Node.js</Badge>
-            <Badge bg="warning" className="me-2 mb-2">JavaScript</Badge>
-            <Badge bg="info" className="me-2 mb-2">UI/UX Design</Badge>
-            <Badge bg="dark" className="me-2 mb-2">MySQL</Badge> */}
+            {profile.skill ? (
+              profile.skill.split(',').map((skill, index) => (
+                <Badge key={index} bg="primary" className="me-2 mb-2">
+                  {skill.trim()}
+                </Badge>
+              ))
+            ) : (
+              <p className="text-muted">No skills added yet</p>
+            )}
           </div>
         </Card>
       </div>
@@ -267,8 +312,7 @@ export default function Profile() {
         <Card className="shadow-sm border-0 p-4 mb-4">
           <h4 className="fw-bold mb-3">About My Works</h4>
           <p className="text-muted">
-            I am a full-stack developer with experience in building mobile-responsive
-            systems, Power Apps solutions, freelance websites, and dashboard applications.
+            {profile.about || "No work description added yet"}
           </p>
         </Card>
       </div>       

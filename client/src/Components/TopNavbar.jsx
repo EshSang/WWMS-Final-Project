@@ -1,6 +1,7 @@
-import React from "react";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import React, { useState } from "react";
+import { Navbar, Nav, Container, Form } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import ProfileModal from "./ProfileModal";
 
 
 
@@ -10,6 +11,7 @@ export default function TopNavbar() {
     const { selectedType: stateSelectedType } = location.state || {}; // Access passed value
 
     const navigate = useNavigate();
+    const [showProfileModal, setShowProfileModal] = useState(false);
     
     // Get selectedType from state, sessionStorage, or infer from URL path
     let userRole;
@@ -62,7 +64,22 @@ export default function TopNavbar() {
 
     // Choose links based on role
     const navLinks = userRole === "Worker" ? workerLinks : customerLinks;
-    
+
+    // Handle role toggle
+    const handleRoleToggle = (e) => {
+        const isWorker = e.target.checked;
+        const newRole = isWorker ? "Worker" : "Customer";
+
+        // Update sessionStorage
+        sessionStorage.setItem("selectedType", newRole);
+
+        // Navigate to the appropriate home page
+        if (isWorker) {
+            navigate("/workerjob", { state: { selectedType: "Worker" } });
+        } else {
+            navigate("/customerjobs", { state: { selectedType: "Customer" } });
+        }
+    };
 
     const handleUserProfileClick = () => {
     navigate("profile");
@@ -95,26 +112,53 @@ export default function TopNavbar() {
                             ))}
                         </Nav>
 
-                        {/* Profile Section */}
-                        <div className="ms-auto d-flex align-items-center mt-2 mt-lg-0">
-                            <span className="me-2 small text-muted">Hello,</span>
-                            <span className="fw-medium me-3">Eshana Sangeeth</span>
-                            <Link to="/profile">
-                            <button className="cursor-pointer bg-transparent border-0 p-0">
-                            <img
-                                src="/Profile.png"
-                                alt="Profile"
-                                className="rounded-circle border border-info"
-                                width="40"
-                                height="40"
-                                style={{ objectFit: "cover" }}
-                            />
-                            </button>
-                            </Link>
+                        {/* Role Toggle and Profile Section */}
+                        <div className="ms-auto d-flex align-items-center gap-3 mt-2 mt-lg-0">
+                            {/* Role Toggle Switch */}
+                            <div className="d-flex align-items-center gap-2">
+                                <span className="small text-muted">Customer</span>
+                                <Form.Check
+                                    type="switch"
+                                    id="role-toggle"
+                                    checked={userRole === "Worker"}
+                                    onChange={handleRoleToggle}
+                                    style={{
+                                        transform: "scale(1.2)",
+                                        cursor: "pointer"
+                                    }}
+                                />
+                                <span className="small text-muted">Worker</span>
+                            </div>
+
+                            {/* Profile Section */}
+                            <div className="d-flex align-items-center">
+                                <span className="me-2 small text-muted">Hello,</span>
+                                <span className="fw-medium me-3">Eshana Sangeeth</span>
+                                <button
+                                    onClick={() => setShowProfileModal(true)}
+                                    className="cursor-pointer bg-transparent border-0 p-0"
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <img
+                                        src="/Profile.png"
+                                        alt="Profile"
+                                        className="rounded-circle border border-info"
+                                        width="40"
+                                        height="40"
+                                        style={{ objectFit: "cover" }}
+                                    />
+                                </button>
+                            </div>
                         </div>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
+
+            {/* Profile Modal */}
+            <ProfileModal
+                show={showProfileModal}
+                onHide={() => setShowProfileModal(false)}
+            />
         </div>
     )
 }

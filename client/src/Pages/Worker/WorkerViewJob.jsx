@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { FaArrowLeft, FaMapMarkerAlt, FaRegCalendarAlt, FaBriefcase, FaUser, FaPhone, FaHome } from "react-icons/fa";
+import { FaArrowLeft, FaMapMarkerAlt, FaRegCalendarAlt, FaBriefcase, FaUser } from "react-icons/fa";
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Button, Modal, Container, Card, Badge, Row, Col } from "react-bootstrap";
+import { Button, Modal, Container, Card, Badge } from "react-bootstrap";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import TopNavbar from "../../Components/TopNavbar";
 import Footer from "../../Components/Footer";
+import axiosInstance from "../../api/axios";
 import './WorkerViewJob.css';
 
 export default function WorkerViewJob() {
@@ -18,7 +21,37 @@ export default function WorkerViewJob() {
     const job = state;
     console.log("Job details:", job);
 
+    // Get logged-in user email
+    const loggedUserEmail = localStorage.getItem("logginUserEmail");
+
+    // Check if logged user is the job creator
+    const isJobCreator = job?.createdUser?.email === loggedUserEmail;
+
     const [show, setShow] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+
+    const handleApplyJob = async () => {
+        setSubmitting(true);
+        try {
+            const response = await axiosInstance.post('/api/applications', {
+                jobId: job.id
+            });
+
+            console.log("Application submitted:", response.data);
+            toast.success("Application submitted successfully!");
+            setShow(false);
+
+            setTimeout(() => {
+                navigate("/workerorders");
+            }, 2000);
+        } catch (error) {
+            console.error("Error submitting application:", error);
+            const errorMessage = error.response?.data?.message || "Failed to submit application. Please try again.";
+            toast.error(errorMessage);
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
     // Calculate days ago
     const getDaysAgo = (date) => {
@@ -51,24 +84,24 @@ export default function WorkerViewJob() {
                             {/* Header with Title and Status */}
                             <div className="d-flex justify-content-between align-items-start mb-4">
                                 <div className="flex-grow-1">
-                                    <h2 className="fw-bold theme-primary mb-3">{job.job_title}</h2>
+                                    <h2 className="fw-bold theme-primary mb-3">{job.title}</h2>
                                     <div className="d-flex flex-wrap gap-3 text-secondary">
                                         <span className="d-flex align-items-center">
                                             <FaMapMarkerAlt size={16} className="me-2 theme-primary" />
-                                            {job.job_location}
+                                            {job.location}
                                         </span>
                                         <span className="d-flex align-items-center">
                                             <FaRegCalendarAlt size={16} className="me-2 theme-primary" />
-                                            Posted {getDaysAgo(job.job_posted_date)}
+                                            Posted {getDaysAgo(job.postedDate)}
                                         </span>
                                         <span className="d-flex align-items-center">
                                             <FaBriefcase size={16} className="me-2 theme-primary" />
-                                            {job.job_category}
+                                            {job.category?.category}
                                         </span>
                                     </div>
                                 </div>
                                 <Badge bg="success" className="px-3 py-2 fs-6">
-                                    {job.job_status || 'Open'}
+                                    {job.status || 'Open'}
                                 </Badge>
                             </div>
 
@@ -81,7 +114,7 @@ export default function WorkerViewJob() {
                                     Job Description
                                 </h5>
                                 <p className="text-muted" style={{ textAlign: "justify", lineHeight: "1.8", fontSize: "1.05rem" }}>
-                                    {job.job_description}
+                                    {job.description}
                                 </p>
                             </div>
 
@@ -110,47 +143,40 @@ export default function WorkerViewJob() {
 
                             <hr className="my-4" />
 
-                            {/* Contact Details Section */}
-                            <div className="mb-4">
-                                <h5 className="fw-bold mb-3 section-title">
-                                    <span className="title-accent"></span>
-                                    Contact Information
-                                </h5>
-                                <Row className="g-4">
-                                    <Col md={4}>
-                                        <div className="contact-item">
-                                            <FaUser className="theme-primary mb-2" size={20} />
-                                            <div className="small text-muted">Customer Name</div>
-                                            <div className="fw-semibold">{job.customer_name}</div>
+                            {/* Job Creator Info */}
+                            {job.createdUser && (
+                                <div className="mb-4">
+                                    <h5 className="fw-bold mb-3 section-title">
+                                        <span className="title-accent"></span>
+                                        Posted By
+                                    </h5>
+                                    <div className="d-flex align-items-center">
+                                        <FaUser className="theme-primary me-2" size={20} />
+                                        <div>
+                                            <div className="fw-semibold">{job.createdUser.fname} {job.createdUser.lname}</div>
+                                            <div className="small text-muted">{job.createdUser.email}</div>
                                         </div>
-                                    </Col>
-                                    <Col md={4}>
-                                        <div className="contact-item">
-                                            <FaPhone className="theme-primary mb-2" size={20} />
-                                            <div className="small text-muted">Phone Number</div>
-                                            <div className="fw-semibold">{job.customer_phone}</div>
-                                        </div>
-                                    </Col>
-                                    <Col md={4}>
-                                        <div className="contact-item">
-                                            <FaHome className="theme-primary mb-2" size={20} />
-                                            <div className="small text-muted">Address</div>
-                                            <div className="fw-semibold">{job.customer_address}</div>
-                                        </div>
-                                    </Col>
-                                </Row>
-                            </div>
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Apply Button */}
                             <div className="text-center mt-5">
-                                <Button
-                                    onClick={() => setShow(true)}
-                                    variant="info"
-                                    size="lg"
-                                    className="px-5 py-3 text-white apply-button"
-                                >
-                                    Apply for this Job
-                                </Button>
+                                {isJobCreator ? (
+                                    <div className="alert alert-info">
+                                        <FaUser className="me-2" />
+                                        You cannot apply to your own job posting
+                                    </div>
+                                ) : (
+                                    <Button
+                                        onClick={() => setShow(true)}
+                                        variant="info"
+                                        size="lg"
+                                        className="px-5 py-3 text-white apply-button"
+                                    >
+                                        Apply for this Job
+                                    </Button>
+                                )}
                             </div>
                         </Card.Body>
                     </Card>
@@ -166,7 +192,7 @@ export default function WorkerViewJob() {
                                 <div className="confirmation-icon mb-3">
                                     <FaBriefcase size={40} className="theme-primary" />
                                 </div>
-                                <h5 className="mb-2">Apply for {job.job_title}?</h5>
+                                <h5 className="mb-2">Apply for {job.title}?</h5>
                                 <p className="text-muted">
                                     Your application will be sent to the employer. Make sure you're ready!
                                 </p>
@@ -178,6 +204,7 @@ export default function WorkerViewJob() {
                                 variant="outline-secondary"
                                 style={{ width: "140px" }}
                                 onClick={() => setShow(false)}
+                                disabled={submitting}
                             >
                                 Cancel
                             </Button>
@@ -185,8 +212,10 @@ export default function WorkerViewJob() {
                                 variant="info"
                                 className="text-white"
                                 style={{ width: "140px" }}
+                                onClick={handleApplyJob}
+                                disabled={submitting}
                             >
-                                Confirm Apply
+                                {submitting ? 'Submitting...' : 'Confirm Apply'}
                             </Button>
                         </Modal.Footer>
                     </Modal>
@@ -194,6 +223,16 @@ export default function WorkerViewJob() {
                 </Container>
             </div>
             <Footer />
+
+            <ToastContainer
+                position="top-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                pauseOnHover
+                theme="colored"
+            />
         </div>
     )
 }

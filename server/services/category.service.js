@@ -17,7 +17,7 @@ class CategoryService {
    */
   async getCategoryById(categoryId) {
     return await prisma.jobCategory.findUnique({
-      where: { category_id: categoryId }
+      where: { id: categoryId }
     });
   }
 
@@ -35,7 +35,7 @@ class CategoryService {
    */
   async updateCategory(categoryId, categoryData) {
     return await prisma.jobCategory.update({
-      where: { category_id: categoryId },
+      where: { id: categoryId },
       data: categoryData
     });
   }
@@ -45,7 +45,7 @@ class CategoryService {
    */
   async deleteCategory(categoryId) {
     return await prisma.jobCategory.delete({
-      where: { category_id: categoryId }
+      where: { id: categoryId }
     });
   }
 }

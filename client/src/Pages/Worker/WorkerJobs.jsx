@@ -29,15 +29,18 @@ export default function WorkerJobs() {
     }, []);
 
     // FILTER
-    const filteredJobs = jobs.filter((job) =>
-        job.job_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.job_description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.job_category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredJobs = jobs.filter((job) => {
+        const categoryName = job.category?.category || '';
+        return (
+            job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            job.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            categoryName.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    });
 
     // SORT BY MOST RECENT
     const sortedJobs = [...filteredJobs].sort(
-        (a, b) => new Date(b.job_posted_date) - new Date(a.job_posted_date)
+        (a, b) => new Date(b.postedDate) - new Date(a.postedDate)
     );
 
     // Calculate days ago
@@ -125,13 +128,13 @@ export default function WorkerJobs() {
                                             <div className="d-flex justify-content-between align-items-start mb-3">
                                                 <div className="flex-grow-1">
                                                     <div className="d-flex align-items-center gap-2 mb-2">
-                                                        <h5 className="mb-0 fw-bold theme-primary">{job.job_title}</h5>
+                                                        <h5 className="mb-0 fw-bold theme-primary">{job.title}</h5>
                                                         <Badge bg="success" className="rounded-pill">
-                                                            {job.job_status || 'Open'}
+                                                            {job.status || 'Open'}
                                                         </Badge>
                                                     </div>
                                                     <p className="text-muted mb-3" style={{ lineHeight: '1.6' }}>
-                                                        {job.job_description}
+                                                        {job.description}
                                                     </p>
                                                 </div>
                                             </div>
@@ -140,7 +143,7 @@ export default function WorkerJobs() {
                                             <div className="mb-3">
                                                 <Badge bg="light" text="dark" className="px-3 py-2 me-2">
                                                     <Briefcase size={14} className="me-1" />
-                                                    {job.job_category}
+                                                    {job.category?.category}
                                                 </Badge>
                                             </div>
 
@@ -165,18 +168,18 @@ export default function WorkerJobs() {
                                                 <div className="d-flex align-items-center gap-3 text-secondary small">
                                                     <span className="d-flex align-items-center">
                                                         <GeoAlt size={16} className="me-1" />
-                                                        {job.job_location}
+                                                        {job.location}
                                                     </span>
                                                     <span className="d-flex align-items-center">
                                                         <CalendarDate size={16} className="me-1" />
-                                                        {getDaysAgo(job.job_posted_date)}
+                                                        {getDaysAgo(job.postedDate)}
                                                     </span>
                                                 </div>
                                                 <Button
                                                     variant="info"
                                                     size="sm"
                                                     className="px-4 rounded-pill text-white"
-                                                    onClick={() => navigate(`/workerviewjob/${job.job_id}`, { state: job })}
+                                                    onClick={() => navigate(`/workerviewjob/${job.id}`, { state: job })}
                                                 >
                                                     View Details →
                                                 </Button>

@@ -55,14 +55,14 @@ function SigninForm() {
       const res = await axiosInstance.post("/signin", { email, password });
       console.log("✅ Login response:", res.data);
 
-      // Save logged-in user email in local storage
-    localStorage.setItem("logginUserEmail", res.data.user.email);
+      // Save logged-in user email and data in local storage
+      localStorage.setItem("logginUserEmail", res.data.user.email);
 
       toast.success("✅ Login Success!");
       login(res.data.token);
-    
+
+      // All users navigate to home page
       navigate("/home");
-      //setTimeout(() => navigate("/home"), 1500);
     } catch (err) {
       console.error("❌ Login error:", err);
       console.error("❌ Error response:", err.response?.data);

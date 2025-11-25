@@ -9,7 +9,6 @@ import SignIn from './Pages/Auth/SignIn'
 
 // Common Pages
 import Home from './Pages/Common/Home';
-import UserProfile from './Pages/Common/UserProfile';
 
 // Worker Pages
 import WorkerJobs from './Pages/Worker/WorkerJobs';
@@ -63,9 +62,6 @@ function App() {
             <Route path="/customerpostedjobs" element={<ProtectedRoute><CustomerPostedJobs/></ProtectedRoute>} />
             <Route path="/customerreviews" element={<ProtectedRoute><CustomerReviews/></ProtectedRoute>} />
             <Route path="/customeranalytics" element={<ProtectedRoute><CustomerAnalytics/></ProtectedRoute>} />
-
-            {/* User Profile */}
-            <Route path="/profile" element={<ProtectedRoute><UserProfile/></ProtectedRoute>} />
 
           </Routes>
         </Router>

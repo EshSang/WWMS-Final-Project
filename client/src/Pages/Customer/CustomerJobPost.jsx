@@ -17,16 +17,13 @@ export default function CustomerJobPost() {
   const getLoginEmail = localStorage.getItem("logginUserEmail");
 
   const [formData, setformData] = useState({
-    job_title: "",
-    job_location: "",
-    job_description: "",
+    title: "",
+    location: "",
+    description: "",
     skills: "",
-    job_posted_date: "",
-    customer_name: "",
-    customer_phone: "",
-    customer_address: "",
-    job_category: "",
-    hourly_rate: "",
+    postedDate: "",
+    categoryId: "",
+    hourlyRate: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -37,40 +34,28 @@ export default function CustomerJobPost() {
   const validateForm = () => {
     let formErrors = {};
 
-    if (!formData.job_title.trim()) {
-      formErrors.job_title = "Job title is required.";
+    if (!formData.title.trim()) {
+      formErrors.title = "Job title is required.";
     }
 
-    if (!formData.job_location.trim()) {
-      formErrors.job_location = "Job location is required.";
+    if (!formData.location.trim()) {
+      formErrors.location = "Job location is required.";
     }
 
-    if (!formData.job_category.trim()) {
-      formErrors.job_category = "Please select a category.";
+    if (!formData.categoryId) {
+      formErrors.categoryId = "Please select a category.";
     }
 
-    if (!formData.hourly_rate || formData.hourly_rate <= 0) {
-      formErrors.hourly_rate = "Hourly rate must be greater than 0.";
+    if (!formData.hourlyRate || formData.hourlyRate <= 0) {
+      formErrors.hourlyRate = "Hourly rate must be greater than 0.";
     }
 
-    if (!formData.job_description.trim()) {
-      formErrors.job_description = "Job description is required.";
+    if (!formData.description.trim()) {
+      formErrors.description = "Job description is required.";
     }
 
     if (!formData.skills.trim()) {
       formErrors.skills = "Skills are required.";
-    }
-
-    if (!formData.customer_name.trim()) {
-      formErrors.customer_name = "Customer name is required.";
-    }
-
-    if (!formData.customer_phone.trim() || formData.customer_phone.length !== 10) {
-      formErrors.customer_phone = "Phone number must be exactly 10 digits.";
-    }
-
-    if (!formData.customer_address.trim()) {
-      formErrors.customer_address = "Customer address is required.";
     }
 
     setErrors(formErrors);
@@ -97,16 +82,13 @@ export default function CustomerJobPost() {
         toast.success("✅ Submitted successfully!");
 
         setformData({
-          job_title: "",
-          job_location: "",
-          job_description: "",
+          title: "",
+          location: "",
+          description: "",
           skills: "",
-          job_posted_date: "",
-          customer_name: "",
-          customer_phone: "",
-          customer_address: "",
-          job_category: "",
-          hourly_rate: "",
+          postedDate: "",
+          categoryId: "",
+          hourlyRate: "",
         });
 
         setTimeout(() => navigate("/customerjobs"), 2000);
@@ -123,7 +105,7 @@ export default function CustomerJobPost() {
     const formattedDate = today.toISOString().split("T")[0];
     setformData((prevData) => ({
       ...prevData,
-      job_posted_date: formattedDate,
+      postedDate: formattedDate,
     }));
   }, []);
 
@@ -167,19 +149,19 @@ export default function CustomerJobPost() {
                   <Form.Control
                     type="text"
                     placeholder="Enter job title"
-                    name="job_title"
-                    value={formData.job_title}
+                    name="title"
+                    value={formData.title}
                     onChange={(e) => {
-                      setformData({ ...formData, job_title: e.target.value });
-                      if (errors.job_title) {
-                        setErrors({ ...errors, job_title: "" });
+                      setformData({ ...formData, title: e.target.value });
+                      if (errors.title) {
+                        setErrors({ ...errors, title: "" });
                       }
                     }}
-                    isInvalid={!!errors.job_title}
+                    isInvalid={!!errors.title}
                     required
                   />
                   <Form.Control.Feedback type="invalid">
-                    {errors.job_title}
+                    {errors.title}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -190,19 +172,19 @@ export default function CustomerJobPost() {
                   <Form.Control
                     type="text"
                     placeholder="Enter job location"
-                    name="job_location"
-                    value={formData.job_location}
+                    name="location"
+                    value={formData.location}
                     onChange={(e) => {
-                      setformData({ ...formData, job_location: e.target.value });
-                      if (errors.job_location) {
-                        setErrors({ ...errors, job_location: "" });
+                      setformData({ ...formData, location: e.target.value });
+                      if (errors.location) {
+                        setErrors({ ...errors, location: "" });
                       }
                     }}
-                    isInvalid={!!errors.job_location}
+                    isInvalid={!!errors.location}
                     required
                   />
                   <Form.Control.Feedback type="invalid">
-                    {errors.job_location}
+                    {errors.location}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -211,22 +193,22 @@ export default function CustomerJobPost() {
             <Form.Group className="mb-3">
               <Form.Label>Category</Form.Label>
               <Form.Select
-                name="job_category"
-                value={formData.job_category}
+                name="categoryId"
+                value={formData.categoryId}
                 onChange={(e) => {
-                  setformData({ ...formData, job_category: e.target.value });
-                  if (errors.job_category) {
-                    setErrors({ ...errors, job_category: "" });
+                  setformData({ ...formData, categoryId: e.target.value });
+                  if (errors.categoryId) {
+                    setErrors({ ...errors, categoryId: "" });
                   }
                 }}
-                isInvalid={!!errors.job_category}
+                isInvalid={!!errors.categoryId}
                 required
               >
                 <option value="">-- Select Category --</option>
 
                 {categories.map((cat) => {
-                  const key = cat.category_id ?? cat.id ?? cat._id ?? JSON.stringify(cat);
-                  const value = cat.category ?? cat.name ?? cat.id ?? "";
+                  const key = cat.id ?? cat._id ?? JSON.stringify(cat);
+                  const value = cat.id ?? "";
                   const label = cat.category ?? cat.name ?? value;
                   return (
                     <option key={key} value={value}>
@@ -237,7 +219,7 @@ export default function CustomerJobPost() {
               </Form.Select>
 
               <Form.Control.Feedback type="invalid">
-                {errors.job_category}
+                {errors.categoryId}
               </Form.Control.Feedback>
             </Form.Group>
 
@@ -246,21 +228,21 @@ export default function CustomerJobPost() {
               <Form.Control
                 type="number"
                 placeholder="Enter hourly rate"
-                name="hourly_rate"
-                value={formData.hourly_rate}
+                name="hourlyRate"
+                value={formData.hourlyRate}
                 onChange={(e) => {
                   const numericValue = e.target.value.replace(/[^0-9]/g, "");
-                  setformData({ ...formData, hourly_rate: numericValue });
+                  setformData({ ...formData, hourlyRate: numericValue });
 
-                  if (errors.hourly_rate) {
-                    setErrors({ ...errors, hourly_rate: "" });
+                  if (errors.hourlyRate) {
+                    setErrors({ ...errors, hourlyRate: "" });
                   }
                 }}
-                isInvalid={!!errors.hourly_rate}
+                isInvalid={!!errors.hourlyRate}
                 required
               />
               <Form.Control.Feedback type="invalid">
-                {errors.hourly_rate}
+                {errors.hourlyRate}
               </Form.Control.Feedback>
             </Form.Group>
 
@@ -270,19 +252,19 @@ export default function CustomerJobPost() {
                 as="textarea"
                 rows={3}
                 placeholder="Enter job description"
-                name="job_description"
-                value={formData.job_description}
+                name="description"
+                value={formData.description}
                 onChange={(e) => {
-                  setformData({ ...formData, job_description: e.target.value });
-                  if (errors.job_description) {
-                    setErrors({ ...errors, job_description: "" });
+                  setformData({ ...formData, description: e.target.value });
+                  if (errors.description) {
+                    setErrors({ ...errors, description: "" });
                   }
                 }}
-                isInvalid={!!errors.job_description}
+                isInvalid={!!errors.description}
                 required
               />
               <Form.Control.Feedback type="invalid">
-                {errors.job_description}
+                {errors.description}
               </Form.Control.Feedback>
             </Form.Group>
 
@@ -315,90 +297,18 @@ export default function CustomerJobPost() {
                   <Form.Label>Job Posted Date</Form.Label>
                   <Form.Control
                     type="date"
-                    name="job_posted_date"
-                    value={formData.job_posted_date}
+                    name="postedDate"
+                    value={formData.postedDate}
                     disabled
-                    isInvalid={!!errors.job_posted_date}
+                    isInvalid={!!errors.postedDate}
                     required
                   />
                   <Form.Control.Feedback type="invalid">
-                    {errors.job_posted_date}
+                    {errors.postedDate}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
-
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Customer Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter customer name"
-                    name="customer_name"
-                    value={formData.customer_name}
-                    onChange={(e) => {
-                      setformData({ ...formData, customer_name: e.target.value });
-                      if (errors.customer_name) {
-                        setErrors({ ...errors, customer_name: "" });
-                      }
-                    }}
-                    isInvalid={!!errors.customer_name}
-                    required
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.customer_name}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Customer Phone</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter phone number"
-                    name="customer_phone"
-                    value={formData.customer_phone}
-                    onChange={(e) => {
-                      const numericValue = e.target.value.replace(/[^0-9]/g, "");
-                      setformData({ ...formData, customer_phone: numericValue });
-
-                      if (errors.customer_phone) {
-                        setErrors({ ...errors, customer_phone: "" });
-                      }
-                    }}
-                    maxLength={10}
-                    isInvalid={!!errors.customer_phone}
-                    required
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.customer_phone}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Customer Address</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter customer address"
-                name="customer_address"
-                value={formData.customer_address}
-                onChange={(e) => {
-                  setformData({ ...formData, customer_address: e.target.value });
-                  if (errors.customer_address) {
-                    setErrors({ ...errors, customer_address: "" });
-                  }
-                }}
-                isInvalid={!!errors.customer_address}
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.customer_address}
-              </Form.Control.Feedback>
-            </Form.Group>
 
             <div className="text-center mb-5 pb-5">
               <Button variant="primary" type="submit" className="px-5">

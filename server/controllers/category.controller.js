@@ -6,7 +6,7 @@ class CategoryController {
    */
   async getAllCategories(req, res) {
     try {
-      console.log(`[${new Date().toISOString()}] Fetching all categories - User: ${req.user.email} (ID: ${req.user.userid})`);
+      console.log(`[${new Date().toISOString()}] Fetching all categories - User: ${req.user.email} (ID: ${req.user.id})`);
 
       const categories = await categoryService.getAllCategories();
 
@@ -42,7 +42,7 @@ class CategoryController {
 
       const newCategory = await categoryService.createCategory({ category });
 
-      console.log(`[${new Date().toISOString()}] Category created successfully - ID: ${newCategory.category_id}`);
+      console.log(`[${new Date().toISOString()}] Category created successfully - ID: ${newCategory.id}`);
 
       res.status(201).json({
         message: "Category created successfully",

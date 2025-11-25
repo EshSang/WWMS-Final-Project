@@ -32,25 +32,24 @@ function SignupForm() {
       return;
     }
 
-    axiosInstance.post("/signup", values)
+    axiosInstance.post("/api/auth/signup", values)
       .then(res => {
         if (res.data === "User already exists" || res.data?.message === "User already exists") {
           setErrorMessage("⚠️ This email is already registered. Please use a different one.");
           return;
         }
 
-        setSuccessMessage("✅ User registered successfully!");
-        setValues({
-          fname: '',
-          lname: '',
-          phonenumber: '',
-          email: '',
-          password: ''
-        });
+        setSuccessMessage("✅ User registered successfully! Redirecting to login...");
 
-        setTimeout(() => navigate("/"), 2000);
+        // Redirect to login page after successful registration
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
       })
-      .catch(() => setErrorMessage("❌ Something went wrong. Please try again later."));
+      .catch(err => {
+        const errorMsg = err.response?.data?.message || "❌ Something went wrong. Please try again later.";
+        setErrorMessage(errorMsg);
+      });
   };
 
   return (
